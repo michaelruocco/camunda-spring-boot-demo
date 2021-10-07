@@ -2,11 +2,11 @@ package uk.co.mruoc.demo.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import uk.co.mruoc.demo.domain.entity.Payment;
-import uk.co.mruoc.demo.domain.entity.Status;
 
 @RequiredArgsConstructor
 public class PaymentProcessor {
 
+    private final PreparePayment preparePayment;
     private final PaymentRepository repository;
 
     public void process(Payment payment) {
@@ -14,7 +14,8 @@ public class PaymentProcessor {
         if (repository.exists(id)) {
             throw new PaymentAlreadyExistsException(id);
         }
-        repository.save(payment.withStatus(Status.PENDING));
+        Payment prepared = preparePayment.prepare(payment);
+        repository.save(prepared);
     }
 
 }

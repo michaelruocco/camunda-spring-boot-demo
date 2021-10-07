@@ -1,10 +1,8 @@
 package uk.co.mruoc.demo.domain.service;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import uk.co.mruoc.demo.domain.entity.Payment;
 import uk.co.mruoc.demo.domain.entity.PaymentMother;
-import uk.co.mruoc.demo.domain.entity.Status;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -14,9 +12,10 @@ import static org.mockito.Mockito.when;
 
 class PaymentProcessorTest {
 
+    private final PreparePayment preparePayment = mock(PreparePayment.class);
     private final PaymentRepository repository = mock(PaymentRepository.class);
 
-    private final PaymentProcessor processor = new PaymentProcessor(repository);
+    private final PaymentProcessor processor = new PaymentProcessor(preparePayment, repository);
 
     @Test
     void shouldThrowExceptionIfPaymentAlreadyExists() {
@@ -31,18 +30,15 @@ class PaymentProcessorTest {
     }
 
     @Test
-    void shouldSavePaymentWithPendingStatusIfPaymentDoesNotAlreadyExist() {
+    void shouldPrepareAndSavePaymentIfPaymentDoesNotAlreadyExist() {
         Payment payment = PaymentMother.build();
         when(repository.exists(payment.getId())).thenReturn(false);
+        Payment preparedPayment = mock(Payment.class);
+        when(preparePayment.prepare(payment)).thenReturn(preparedPayment);
 
         processor.process(payment);
 
-        ArgumentCaptor<Payment> captor = ArgumentCaptor.forClass(Payment.class);
-        verify(repository).save(captor.capture());
-        Payment savedPayment = captor.getValue();
-        assertThat(savedPayment)
-                .usingRecursiveComparison()
-                .isEqualTo(payment.withStatus(Status.PENDING));
+        verify(repository).save(preparedPayment);
     }
 
 }

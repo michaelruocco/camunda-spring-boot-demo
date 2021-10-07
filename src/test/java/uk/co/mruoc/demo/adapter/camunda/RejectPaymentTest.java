@@ -2,56 +2,36 @@ package uk.co.mruoc.demo.adapter.camunda;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.Optional;
+import org.mockito.ArgumentCaptor;
+import uk.co.mruoc.demo.domain.entity.Payment;
+import uk.co.mruoc.demo.domain.entity.PaymentMother;
+import uk.co.mruoc.demo.domain.service.PaymentRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.co.mruoc.demo.CaptureLogLines.captureLogLines;
 
 class RejectPaymentTest {
 
-    private final VariableUpdater updater = mock(VariableUpdater.class);
+
+    private final PaymentRepository repository = mock(PaymentRepository.class);
     private final VariableExtractor extractor = mock(VariableExtractor.class);
 
-    private final RejectPayment rejectPayment = new RejectPayment(updater, extractor);
+    private final RejectPayment acceptPayment = new RejectPayment(extractor, repository);
 
     @Test
-    void shouldSetRejected() {
+    void shouldRejectAndSavePayment() {
         DelegateExecution execution = mock(DelegateExecution.class);
+        Payment payment = PaymentMother.pending();
+        when(extractor.extractPayment(execution)).thenReturn(payment);
 
-        rejectPayment.execute(execution);
+        acceptPayment.execute(execution);
 
-        verify(updater).setRejected(execution);
-    }
-
-    @Test
-    void shouldLogWithoutRiskScoreIfNotPresent() {
-        DelegateExecution execution = mock(DelegateExecution.class);
-        when(extractor.extractCost(execution)).thenReturn(50d);
-        when(extractor.extractProductId(execution)).thenReturn("789123");
-        when(extractor.extractRiskScore(execution)).thenReturn(Optional.empty());
-
-        List<String> lines = captureLogLines(() -> rejectPayment.execute(execution));
-
-        assertThat(lines).hasSize(1);
-        assertThat(lines.get(0)).endsWith("Rejected payment of 50.0 for product 789123...");
-    }
-
-    @Test
-    void shouldLogWithRiskScoreIfPresent() {
-        DelegateExecution execution = mock(DelegateExecution.class);
-        when(extractor.extractCost(execution)).thenReturn(51d);
-        when(extractor.extractProductId(execution)).thenReturn("123456");
-        when(extractor.extractRiskScore(execution)).thenReturn(Optional.of(123.45d));
-
-        List<String> lines = captureLogLines(() -> rejectPayment.execute(execution));
-
-        assertThat(lines).hasSize(1);
-        assertThat(lines.get(0)).endsWith("Rejected payment of 51.0 for product 123456 with risk score 123.45...");
+        ArgumentCaptor<Payment> captor = ArgumentCaptor.forClass(Payment.class);
+        verify(repository).save(captor.capture());
+        Payment saved = captor.getValue();
+        assertThat(saved).usingRecursiveComparison().isEqualTo(payment.reject());
     }
 
 }

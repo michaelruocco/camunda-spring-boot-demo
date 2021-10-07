@@ -15,6 +15,14 @@ public class PaymentMother {
         return builder().id(id).build();
     }
 
+    public static Payment pending() {
+        return withStatus(Status.PENDING);
+    }
+
+    public static Payment withStatus(Status status) {
+        return builder().status(status).build();
+    }
+
     private static PaymentBuilder builder() {
         return Payment.builder()
                 .id("1234567890")

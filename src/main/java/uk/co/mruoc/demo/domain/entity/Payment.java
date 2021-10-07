@@ -1,5 +1,6 @@
 package uk.co.mruoc.demo.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.With;
@@ -15,5 +16,23 @@ public class Payment {
     private final Account account;
     private final Product product;
     private final String quote;
+
+    public Payment accept() {
+        return withStatus(Status.ACCEPTED);
+    }
+
+    public Payment reject() {
+        return withStatus(Status.REJECTED);
+    }
+
+    @JsonIgnore
+    public String getProductId() {
+        return product.getId();
+    }
+
+    @JsonIgnore
+    public double getCost() {
+        return product.getCost();
+    }
 
 }
