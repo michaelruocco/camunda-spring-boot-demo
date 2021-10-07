@@ -5,7 +5,6 @@ import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.extension.junit5.test.ProcessEngineExtension;
-import org.camunda.spin.json.SpinJsonNode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -23,13 +22,11 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.withVar
 import static org.camunda.bpm.extension.mockito.CamundaMockito.registerJavaDelegateMock;
 import static org.camunda.bpm.extension.mockito.CamundaMockito.reset;
 import static org.camunda.bpm.extension.mockito.CamundaMockito.verifyJavaDelegateMock;
-import static org.camunda.spin.Spin.JSON;
 
 @Deployment(resources = {"bpmns/payment-request.bpmn", "bpmns/payment-auto-approve.dmn"})
 class PaymentRequestBpmnTest {
 
     private static final String PROCESS_DEFINITION_KEY = "payment-requested";
-    private static final String RETRIEVE_QUOTE = "retrieveQuote";
 
     @RegisterExtension
     ProcessEngineExtension extension = ProcessEngineExtension.builder()
@@ -52,20 +49,17 @@ class PaymentRequestBpmnTest {
     @MethodSource("autoDecisionProductCostAndRiskScore")
     void shouldAcceptOrRejectChargeBasedOnProductIdCostAndRiskScore(String productId, double cost, double riskScore, String delegateName, String endName) {
         registerJavaDelegateMock(delegateName);
-        registerJavaDelegateMock(RETRIEVE_QUOTE);
         Map<String, Object> variables = buildVariables(productId, cost, riskScore);
 
         ProcessInstance process = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables);
 
         assertThat(process).hasPassed(endName).isEnded();
-        verifyJavaDelegateMock(RETRIEVE_QUOTE).executed();
         verifyJavaDelegateMock(delegateName).executed();
     }
 
     @ParameterizedTest
     @MethodSource("userApprovalProductCostAndRiskScore")
     void shouldRequireUserApprovalBasedOnItemNameValueAndRiskScore(String productId, double cost, double riskScore, boolean approved, String delegateName, String endName) {
-        registerJavaDelegateMock(RETRIEVE_QUOTE);
         registerJavaDelegateMock(delegateName);
         Map<String, Object> variables = buildVariables(productId, cost, riskScore);
 
@@ -75,10 +69,9 @@ class PaymentRequestBpmnTest {
 
         assertThat(process).isNotEnded().isWaitingAt("user-approval");
 
-        complete(task(), Map.of("approved", approved));
+        complete(task(), isApproved(approved));
 
         assertThat(process).hasPassed(endName).isEnded();
-        verifyJavaDelegateMock(RETRIEVE_QUOTE).executed();
         verifyJavaDelegateMock(delegateName).executed();
     }
 
@@ -102,13 +95,12 @@ class PaymentRequestBpmnTest {
         return withVariables(
                 "productId", productId,
                 "cost", cost,
-                "riskScore", riskScore,
-                "riskPayload", toPayload(riskScore)
+                "riskScore", riskScore
         );
     }
 
-    private static SpinJsonNode toPayload(double riskScore) {
-        return JSON(String.format("{\"data\":{\"score\":%.2f}}", riskScore));
+    private static Map<String, Object> isApproved(boolean approved) {
+        return withVariables("approved", approved);
     }
 
 }

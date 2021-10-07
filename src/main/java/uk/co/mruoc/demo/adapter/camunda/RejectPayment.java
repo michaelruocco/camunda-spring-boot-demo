@@ -17,9 +17,9 @@ public class RejectPayment implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) {
         Payment payment = extractor.extractPayment(execution);
-        Payment acceptedPayment = payment.reject();
-        repository.save(acceptedPayment);
-        log.info("rejected payment {}", payment);
+        Payment rejected = payment.reject();
+        repository.save(rejected);
+        log.info("rejected payment {}", rejected);
     }
 
 }

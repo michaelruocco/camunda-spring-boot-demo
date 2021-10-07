@@ -37,7 +37,7 @@ public class ApplicationConfig {
     public PaymentProcessor paymentProcessor(PreparePayment preparePayment, PaymentRepository repository) {
         return new PaymentProcessor(preparePayment, repository);
     }
-    
+
     @Bean
     public PaymentService paymentService(PaymentProcessor processor, PaymentLoader loader) {
         return new PaymentService(processor, loader);

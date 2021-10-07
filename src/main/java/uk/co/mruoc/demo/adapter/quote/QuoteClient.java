@@ -20,7 +20,7 @@ public class QuoteClient {
 
     public String loadRandomQuote() {
         String url = toUrl(host);
-        log.info("retrieving quote from {}", url);
+        log.debug("retrieving quote from {}", url);
         QuoteResponse response = template.getForObject(url, QuoteResponse.class);
         if (response == null) {
             throw new CouldNotRetrieveQuoteException();

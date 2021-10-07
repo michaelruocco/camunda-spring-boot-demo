@@ -17,9 +17,9 @@ public class AcceptPayment implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) {
         Payment payment = extractor.extractPayment(execution);
-        Payment acceptedPayment = payment.accept();
-        repository.save(acceptedPayment);
-        log.info("accepted payment {}", payment);
+        Payment accepted = payment.accept();
+        repository.save(accepted);
+        log.info("accepted payment {}", accepted);
     }
 
 }

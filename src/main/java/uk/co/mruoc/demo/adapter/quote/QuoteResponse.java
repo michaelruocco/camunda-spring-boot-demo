@@ -9,9 +9,6 @@ import java.util.stream.Stream;
 @Data
 public class QuoteResponse {
 
-    private int status;
-    private String message;
-    private long count;
     private Collection<Quote> quotes;
 
     public Optional<String> getFirstQuote() {

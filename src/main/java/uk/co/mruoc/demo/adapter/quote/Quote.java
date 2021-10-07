@@ -6,7 +6,5 @@ import lombok.Data;
 public class Quote {
 
     private String text;
-    private String author;
-    private String tag;
 
 }
