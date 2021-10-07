@@ -1,4 +1,4 @@
-package uk.co.mruoc.demo.bpmn;
+package uk.co.mruoc.demo.adapter.camunda.bpmn;
 
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
