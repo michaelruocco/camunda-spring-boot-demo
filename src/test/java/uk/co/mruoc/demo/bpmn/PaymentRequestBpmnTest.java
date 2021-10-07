@@ -25,7 +25,7 @@ import static org.camunda.bpm.extension.mockito.CamundaMockito.reset;
 import static org.camunda.bpm.extension.mockito.CamundaMockito.verifyJavaDelegateMock;
 import static org.camunda.spin.Spin.JSON;
 
-@Deployment(resources = {"payment-request.bpmn", "payment-auto-approve.dmn"})
+@Deployment(resources = {"bpmns/payment-request.bpmn", "bpmns/payment-auto-approve.dmn"})
 class PaymentRequestBpmnTest {
 
     private static final String PROCESS_DEFINITION_KEY = "payment-requested";

@@ -27,7 +27,7 @@ class PaymentAutoApproveDmnTest {
 
     @ParameterizedTest
     @MethodSource("productIdsAndApproved")
-    @Deployment(resources = {"payment-auto-approve.dmn"})
+    @Deployment(resources = {"bpmns/payment-auto-approve.dmn"})
     void shouldAutoApproveSpecificProducts(String productId, boolean approved) {
         Map<String, Object> variables = buildVariables(productId);
 
