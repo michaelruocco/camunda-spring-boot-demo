@@ -21,7 +21,8 @@ public class PaymentController {
 
     @PostMapping
     public Payment create(@RequestBody Payment payment) {
-        return paymentService.process(payment);
+        paymentService.process(payment);
+        return get(payment.getId());
     }
 
     @GetMapping("/{id}")

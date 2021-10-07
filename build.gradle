@@ -1,5 +1,6 @@
 plugins {
     id "java-library"
+    id "java-test-fixtures"
     id "jacoco"
     id "maven-publish"
     id "signing"
@@ -43,7 +44,6 @@ dependencies {
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     runtimeOnly "com.h2database:h2:1.4.200"
-
     implementation "org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:${camundaVersion}"
     implementation "org.camunda.bpm:camunda-engine-plugin-spin:${camundaVersion}"
     implementation "org.camunda.spin:camunda-spin-dataformat-all:1.11.0"
@@ -57,6 +57,9 @@ dependencies {
     testImplementation "org.camunda.bpm.extension.mockito:camunda-bpm-mockito:5.15.0"
     testImplementation "org.camunda.bpm.assert:camunda-bpm-assert:10.0.0"
     testImplementation "uk.org.webcompere:system-stubs-core:1.2.0"
+
+    testFixturesCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testFixturesAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 
 javadoc.options.addStringOption('Xdoclint:none', '-quiet')

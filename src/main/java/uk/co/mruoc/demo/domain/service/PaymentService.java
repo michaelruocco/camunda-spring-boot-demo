@@ -1,11 +1,20 @@
 package uk.co.mruoc.demo.domain.service;
 
+import lombok.RequiredArgsConstructor;
 import uk.co.mruoc.demo.domain.entity.Payment;
 
-public interface PaymentService {
+@RequiredArgsConstructor
+public class PaymentService {
 
-    Payment process(Payment payment);
+    private final PaymentProcessor processor;
+    private final PaymentLoader loader;
 
-    Payment load(String id);
+    public void process(Payment payment) {
+        processor.process(payment);
+    }
+
+    public Payment load(String id) {
+        return loader.load(id);
+    }
 
 }
