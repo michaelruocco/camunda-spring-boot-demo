@@ -8,6 +8,7 @@ public class PaymentProcessor {
 
     private final PreparePayment preparePayment;
     private final PaymentRepository repository;
+    private final RequestApproval requestApproval;
 
     public void process(Payment payment) {
         String id = payment.getId();
@@ -16,6 +17,7 @@ public class PaymentProcessor {
         }
         Payment prepared = preparePayment.prepare(payment);
         repository.save(prepared);
+        requestApproval.requestApproval(prepared);
     }
 
 }
