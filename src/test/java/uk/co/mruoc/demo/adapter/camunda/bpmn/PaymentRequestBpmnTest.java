@@ -6,7 +6,6 @@ import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.extension.junit5.test.ProcessEngineExtension;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -23,10 +22,10 @@ import static org.camunda.bpm.extension.mockito.CamundaMockito.registerJavaDeleg
 import static org.camunda.bpm.extension.mockito.CamundaMockito.reset;
 import static org.camunda.bpm.extension.mockito.CamundaMockito.verifyJavaDelegateMock;
 
-@Deployment(resources = {"bpmns/payment-request.bpmn", "bpmns/payment-auto-approve.dmn"})
+@Deployment(resources = {"bpmns/request-payment-approval.bpmn", "bpmns/auto-approve-payment.dmn"})
 class PaymentRequestBpmnTest {
 
-    private static final String PROCESS_DEFINITION_KEY = "payment-requested";
+    private static final String PROCESS_DEFINITION_KEY = "request-payment-approval";
 
     @RegisterExtension
     ProcessEngineExtension extension = ProcessEngineExtension.builder()
@@ -34,11 +33,6 @@ class PaymentRequestBpmnTest {
             .build();
 
     private final RuntimeService runtimeService = extension.getProcessEngine().getRuntimeService();
-
-    @BeforeEach
-    public void setUp() {
-        registerJavaDelegateMock("userApprovalFormExecutionListener");
-    }
 
     @AfterEach
     public void tearDown() {

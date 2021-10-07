@@ -1,10 +1,18 @@
 package uk.co.mruoc.demo.adapter.camunda;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import uk.co.mruoc.demo.domain.entity.Payment;
 
-public interface VariableExtractor {
+import java.util.Map;
 
-    Payment extractPayment(DelegateExecution execution);
+//TODO unit test
+public class VariableExtractor {
+
+    public String extractPaymentId(DelegateExecution execution) {
+        return extractPaymentId(execution.getVariables());
+    }
+
+    public String extractPaymentId(Map<String, Object> variables) {
+        return variables.get("paymentId").toString();
+    }
 
 }

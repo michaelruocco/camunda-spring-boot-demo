@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import uk.co.mruoc.demo.domain.entity.Payment;
 import uk.co.mruoc.demo.domain.entity.PaymentMother;
+import uk.co.mruoc.demo.domain.service.PaymentLoader;
 import uk.co.mruoc.demo.domain.service.PaymentRepository;
 
 
@@ -15,16 +16,18 @@ import static org.mockito.Mockito.when;
 
 class AcceptPaymentTest {
 
-    private final PaymentRepository repository = mock(PaymentRepository.class);
     private final VariableExtractor extractor = mock(VariableExtractor.class);
+    private final PaymentLoader loader = mock(PaymentLoader.class);
+    private final PaymentRepository repository = mock(PaymentRepository.class);
 
-    private final AcceptPayment acceptPayment = new AcceptPayment(extractor, repository);
+    private final AcceptPayment acceptPayment = new AcceptPayment(extractor, loader, repository);
 
     @Test
     void shouldAcceptAndSavePayment() {
         DelegateExecution execution = mock(DelegateExecution.class);
         Payment payment = PaymentMother.pending();
-        when(extractor.extractPayment(execution)).thenReturn(payment);
+        when(extractor.extractPaymentId(execution)).thenReturn(payment.getId());
+        when(loader.load(payment.getId())).thenReturn(payment);
 
         acceptPayment.execute(execution);
 

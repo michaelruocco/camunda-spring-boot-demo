@@ -1,8 +1,12 @@
 package uk.co.mruoc.demo.config;
 
+import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import uk.co.mruoc.demo.adapter.camunda.AcceptPayment;
 import uk.co.mruoc.demo.adapter.camunda.CamundaRequestApproval;
+import uk.co.mruoc.demo.adapter.camunda.RejectPayment;
+import uk.co.mruoc.demo.adapter.camunda.VariableExtractor;
 import uk.co.mruoc.demo.adapter.quote.QuoteClient;
 import uk.co.mruoc.demo.adapter.repository.InMemoryPaymentRepository;
 import uk.co.mruoc.demo.domain.service.PaymentLoader;
@@ -36,8 +40,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public RequestApproval requestApproval() {
-        return new CamundaRequestApproval();
+    public RequestApproval requestApproval(RuntimeService runtimeService) {
+        return new CamundaRequestApproval(runtimeService);
     }
 
     @Bean
@@ -50,6 +54,32 @@ public class ApplicationConfig {
     @Bean
     public PaymentService paymentService(PaymentProcessor processor, PaymentLoader loader) {
         return new PaymentService(processor, loader);
+    }
+
+    @Bean
+    public VariableExtractor variableExtractor() {
+        return new VariableExtractor();
+    }
+
+    @Bean
+    public AcceptPayment acceptPayment(VariableExtractor extractor,
+                                       PaymentLoader loader,
+                                       PaymentRepository repository) {
+        return new AcceptPayment(extractor, loader, repository);
+    }
+    
+    @Bean
+    public RejectPayment rejectPayment(VariableExtractor extractor,
+                                       PaymentLoader loader,
+                                       PaymentRepository repository) {
+        return new RejectPayment(extractor, loader, repository);
+    }
+
+    @Bean
+    public RejectPayment repository(VariableExtractor extractor,
+                                    PaymentLoader loader,
+                                    PaymentRepository repository) {
+        return new RejectPayment(extractor, loader, repository);
     }
 
 }

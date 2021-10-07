@@ -6,13 +6,13 @@
 	},
 	"item": [
 		{
-			"name": "request-payment",
+			"name": "request-payment-user-approval",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"1234567890\",\n    \"product\": {\n        \"id\": \"abc-123\",\n        \"description\": \"demo widget\",\n        \"cost\": 99.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
+					"raw": "{\n    \"id\": \"1234567890\",\n    \"product\": {\n        \"id\": \"abc-123\",\n        \"description\": \"demo widget\",\n        \"cost\": 1999.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -28,6 +28,82 @@
 					"port": "8080",
 					"path": [
 						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "request-payment-auto-approved",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"1234567891\",\n    \"product\": {\n        \"id\": \"abc-789\",\n        \"description\": \"cheap demo widget\",\n        \"cost\": 999.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "request-payment-auto-rejected",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"1234567892\",\n    \"product\": {\n        \"id\": \"efg-123\",\n        \"description\": \"risky demo widget\",\n        \"cost\": 1000\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 150\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-payment",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/payments/1234567890",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payments",
+						"1234567890"
 					]
 				}
 			},

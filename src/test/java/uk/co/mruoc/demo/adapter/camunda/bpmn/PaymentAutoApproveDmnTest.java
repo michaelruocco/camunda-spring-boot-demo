@@ -27,11 +27,11 @@ class PaymentAutoApproveDmnTest {
 
     @ParameterizedTest
     @MethodSource("productIdsAndApproved")
-    @Deployment(resources = {"bpmns/payment-auto-approve.dmn"})
+    @Deployment(resources = {"bpmns/auto-approve-payment.dmn"})
     void shouldAutoApproveSpecificProducts(String productId, boolean approved) {
         Map<String, Object> variables = buildVariables(productId);
 
-        DmnDecisionTableResult result = decisionService.evaluateDecisionTableByKey("approve-payment", variables);
+        DmnDecisionTableResult result = decisionService.evaluateDecisionTableByKey("auto-approve-payment", variables);
 
         assertThat(result.getSingleResult()).containsOnly(entry("approved", approved));
     }
