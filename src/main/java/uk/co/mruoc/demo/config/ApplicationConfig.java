@@ -67,7 +67,7 @@ public class ApplicationConfig {
                                        PaymentRepository repository) {
         return new AcceptPayment(extractor, loader, repository);
     }
-    
+
     @Bean
     public RejectPayment rejectPayment(VariableExtractor extractor,
                                        PaymentLoader loader,
