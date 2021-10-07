@@ -17,7 +17,7 @@ This repo contains a simple demo application using [Camunda](https://camunda.com
 
 ## Useful Commands
 
-```gradle
+```bash
 // cleans build directories
 // prints currentVersion
 // formats code
@@ -26,4 +26,13 @@ This repo contains a simple demo application using [Camunda](https://camunda.com
 // checks for gradle issues
 // checks dependency versions
 ./gradlew clean currentVersion dependencyUpdates lintGradle spotlessApply build
+```
+
+*Note* the gradle lint plugin finds a number of warning violations related to spring boot,
+you can ignore these by omitting the lintGradle task.
+
+To run the service locally:
+
+```bash
+./gradlew bootRun
 ```
