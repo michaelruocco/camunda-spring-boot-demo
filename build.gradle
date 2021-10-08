@@ -17,7 +17,7 @@ plugins {
 group "com.github.michaelruocco"
 
 ext {
-    lombokVersion = "1.18.20"
+    lombokVersion = "1.18.22"
     camundaVersion = "7.15.0"
 
     junitVersion = "5.8.1"
