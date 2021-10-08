@@ -3,12 +3,12 @@ package uk.co.mruoc.demo.adapter.camunda;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
 import uk.co.mruoc.demo.domain.entity.Payment;
 import uk.co.mruoc.demo.domain.service.RequestApproval;
 
 @RequiredArgsConstructor
 @Slf4j
-//TODO unit test
 public class CamundaRequestApproval implements RequestApproval {
 
     private final RuntimeService runtimeService;
@@ -17,7 +17,15 @@ public class CamundaRequestApproval implements RequestApproval {
     @Override
     public void requestApproval(Payment payment) {
         log.info("requesting approval for payment {}", payment);
-        runtimeService.createProcessInstanceByKey("request-payment-approval")
+        ProcessInstance process = triggerProcess(payment);
+        log.info("triggered payment request {} for payment {}",
+                process.getProcessInstanceId(),
+                payment.getId()
+        );
+    }
+
+    private ProcessInstance triggerProcess(Payment payment) {
+        return runtimeService.createProcessInstanceByKey("request-payment-approval")
                 .setVariables(paymentConverter.toVariables(payment))
                 .businessKey(payment.getId())
                 .execute();
