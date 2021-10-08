@@ -14,10 +14,6 @@ public class CamundaRequestApproval implements RequestApproval {
     private final RuntimeService runtimeService;
     private final PaymentConverter paymentConverter;
 
-    public CamundaRequestApproval(RuntimeService runtimeService) {
-        this(runtimeService, new PaymentConverter());
-    }
-
     @Override
     public void requestApproval(Payment payment) {
         log.info("requesting approval for payment {}", payment);

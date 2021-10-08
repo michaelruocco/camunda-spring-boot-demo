@@ -45,11 +45,14 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     runtimeOnly "com.h2database:h2:1.4.200"
     implementation "org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:${camundaVersion}"
+    implementation "org.camunda.bpm:camunda-engine-plugin-spin:${camundaVersion}"
+    implementation "org.camunda.spin:camunda-spin-dataformat-all:1.11.0"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
     testImplementation "org.assertj:assertj-core:3.18.1" // latest version does not work with camunda asserts yet
+    testImplementation "net.javacrumbs.json-unit:json-unit-assertj:2.26.0" // cant use latest because of camunda asserts assertj clash
     testImplementation "org.mockito:mockito-core:3.12.4"
     testImplementation "org.camunda.bpm.extension:camunda-bpm-junit5:1.0.2"
     testImplementation "org.camunda.bpm.extension.mockito:camunda-bpm-mockito:5.15.0"
@@ -57,6 +60,7 @@ dependencies {
 
     testFixturesCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testFixturesAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testFixturesImplementation "com.github.michaelruocco:file-loader:6.0.1"
 }
 
 javadoc.options.addStringOption('Xdoclint:none', '-quiet')

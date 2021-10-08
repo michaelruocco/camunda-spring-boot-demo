@@ -1,0 +1,16 @@
+{
+  "container": {
+    "id": "1234567890",
+    "product": {
+      "id": "abc-123",
+      "description": "demo widget",
+      "cost": 99.99
+    },
+    "account": {
+      "id": "aaa-bbb-ccc",
+      "owner": "Joe Bloggs"
+    },
+    "riskScore": 100.0,
+    "quote": "demo quote"
+  }
+}

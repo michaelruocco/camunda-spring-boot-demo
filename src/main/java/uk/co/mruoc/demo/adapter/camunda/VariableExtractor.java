@@ -4,7 +4,6 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 
 import java.util.Map;
 
-//TODO unit test
 public class VariableExtractor {
 
     public String extractPaymentId(DelegateExecution execution) {

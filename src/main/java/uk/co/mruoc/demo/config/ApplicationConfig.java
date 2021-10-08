@@ -4,7 +4,9 @@ import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import uk.co.mruoc.demo.adapter.camunda.AcceptPayment;
+import uk.co.mruoc.demo.adapter.camunda.ApprovalFormFactory;
 import uk.co.mruoc.demo.adapter.camunda.CamundaRequestApproval;
+import uk.co.mruoc.demo.adapter.camunda.PaymentConverter;
 import uk.co.mruoc.demo.adapter.camunda.RejectPayment;
 import uk.co.mruoc.demo.adapter.camunda.VariableExtractor;
 import uk.co.mruoc.demo.adapter.quote.QuoteClient;
@@ -40,8 +42,18 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public RequestApproval requestApproval(RuntimeService runtimeService) {
-        return new CamundaRequestApproval(runtimeService);
+    public ApprovalFormFactory approvalFormFactory() {
+        return new ApprovalFormFactory();
+    }
+
+    @Bean
+    public PaymentConverter paymentConverter(ApprovalFormFactory formFactory) {
+        return new PaymentConverter(formFactory);
+    }
+
+    @Bean
+    public RequestApproval requestApproval(RuntimeService runtimeService, PaymentConverter converter) {
+        return new CamundaRequestApproval(runtimeService, converter);
     }
 
     @Bean

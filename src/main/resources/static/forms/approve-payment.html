@@ -1,0 +1,84 @@
+<form role="form" class="form-horizontal">
+    <script cam-script type="text/form-script">
+        camForm.on('form-loaded', function () {
+          camForm.variableManager.fetchVariable('approvalForm');
+        });
+
+        camForm.on('variables-fetched', function () {
+          $scope.approvalForm = camForm.variableManager.variableValue('approvalForm');
+        });
+    </script>
+
+    <div class="control-group">
+        <label class="control-label">Account Id</label>
+        <div class="controls">
+            <input type="text"
+                   readonly="true"
+                   ng-model="approvalForm.container.account.id"
+                   class="form-control" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Account Owner</label>
+        <div class="controls">
+            <input type="text"
+                   readonly="true"
+                   ng-model="approvalForm.container.account.owner"
+                   class="form-control" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Product Id</label>
+        <div class="controls">
+            <input type="text"
+                   readonly="true"
+                   ng-model="approvalForm.container.product.id"
+                   class="form-control" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Product Description</label>
+        <div class="controls">
+            <input type="text"
+                   readonly="true"
+                   ng-model="approvalForm.container.product.description"
+                   class="form-control" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Product Cost</label>
+        <div class="controls">
+            <input type="text"
+                   readonly="true"
+                   ng-model="approvalForm.container.product.cost"
+                   class="form-control" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Risk Score</label>
+        <div class="controls">
+            <input type="text"
+                   readonly="true"
+                   ng-model="approvalForm.container.riskScore"
+                   class="form-control" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Quote</label>
+        <div class="controls">
+            <input type="text"
+                   readonly="true"
+                   ng-model="approvalForm.container.quote"
+                   class="form-control" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Approve?</label>
+        <div class="controls">
+            <input type="checkbox"
+                   cam-variable-name="approved"
+                   cam-variable-type="Boolean"
+                   class="form-control" />
+        </div>
+    </div>
+</form>
