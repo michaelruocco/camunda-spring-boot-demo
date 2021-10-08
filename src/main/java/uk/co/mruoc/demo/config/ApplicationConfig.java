@@ -68,14 +68,15 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public UpdateApproval updateApproval() {
-        return new CamundaUpdateApproval();
+    public UpdateApproval updateApproval(RuntimeService runtimeService, PaymentConverter converter) {
+        return new CamundaUpdateApproval(runtimeService, converter);
     }
 
     @Bean
-    public PaymentUpdater paymentUpdater(PaymentRepository repository,
+    public PaymentUpdater paymentUpdater(PreparePayment preparePayment,
+                                         PaymentRepository repository,
                                          UpdateApproval updateApproval) {
-        return new PaymentUpdater(repository, updateApproval);
+        return new PaymentUpdater(preparePayment, repository, updateApproval);
     }
 
     @Bean
