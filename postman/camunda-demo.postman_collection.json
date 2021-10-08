@@ -34,6 +34,34 @@
 			"response": []
 		},
 		{
+			"name": "update-payment-user-approval",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"1234567890\",\n    \"product\": {\n        \"id\": \"efg-345\",\n        \"description\": \"updated demo widget\",\n        \"cost\": 1888.88\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 125\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "request-payment-auto-approved",
 			"request": {
 				"method": "POST",
