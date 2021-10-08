@@ -3,18 +3,24 @@ package uk.co.mruoc.demo.domain.service;
 import lombok.RequiredArgsConstructor;
 import uk.co.mruoc.demo.domain.entity.Payment;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 public class PaymentProcessor {
 
     private final PaymentRepository repository;
-    private final PaymentUpdater updater;
     private final PaymentCreator creator;
+    private final PaymentUpdater updater;
+
 
     public void process(Payment payment) {
-        if (repository.exists(payment.getId())) {
+        Optional<Payment> existing = repository.read(payment.getId());
+        if (existing.isEmpty()) {
+            creator.create(payment);
+        } else if (existing.get().isPending()) {
             updater.update(payment);
         } else {
-            creator.create(payment);
+            throw new PaymentAlreadyProcessedException(payment.getId());
         }
     }
 

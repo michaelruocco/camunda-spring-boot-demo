@@ -8,8 +8,6 @@ public interface PaymentRepository {
 
     void save(Payment payment);
 
-    boolean exists(String id);
-
     Optional<Payment> read(String id);
 
 }

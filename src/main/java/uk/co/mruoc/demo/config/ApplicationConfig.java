@@ -73,17 +73,16 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public PaymentUpdater paymentUpdater(PaymentLoader paymentLoader,
-                                         PaymentRepository repository,
+    public PaymentUpdater paymentUpdater(PaymentRepository repository,
                                          UpdateApproval updateApproval) {
-        return new PaymentUpdater(paymentLoader, repository, updateApproval);
+        return new PaymentUpdater(repository, updateApproval);
     }
 
     @Bean
     public PaymentProcessor paymentProcessor(PaymentRepository repository,
-                                             PaymentUpdater updater,
-                                             PaymentCreator creator) {
-        return new PaymentProcessor(repository, updater, creator);
+                                             PaymentCreator creator,
+                                             PaymentUpdater updater) {
+        return new PaymentProcessor(repository, creator, updater);
     }
 
     @Bean

@@ -11,10 +11,6 @@ public class PaymentCreator {
     private final RequestApproval requestApproval;
 
     public void create(Payment payment) {
-        String id = payment.getId();
-        if (repository.exists(id)) {
-            throw new PaymentAlreadyExistsException(id);
-        }
         Payment prepared = preparePayment.prepare(payment);
         repository.save(prepared);
         requestApproval.request(prepared);

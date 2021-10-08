@@ -23,11 +23,6 @@ public class InMemoryPaymentRepository implements PaymentRepository {
     }
 
     @Override
-    public boolean exists(String id) {
-        return read(id).isPresent();
-    }
-
-    @Override
     public Optional<Payment> read(String id) {
         return Optional.ofNullable(payments.get(id));
     }
