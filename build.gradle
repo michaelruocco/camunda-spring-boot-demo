@@ -53,7 +53,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
     testImplementation "org.assertj:assertj-core:3.18.1" // latest version does not work with camunda asserts yet
     testImplementation "net.javacrumbs.json-unit:json-unit-assertj:2.26.0" // cant use latest because of camunda asserts assertj clash
-    testImplementation "org.mockito:mockito-core:3.12.4"
+    testImplementation "org.mockito:mockito-core:4.0.0"
     testImplementation "org.camunda.bpm.extension:camunda-bpm-junit5:1.0.2"
     testImplementation "org.camunda.bpm.extension.mockito:camunda-bpm-mockito:5.15.0"
     testImplementation "org.camunda.bpm.assert:camunda-bpm-assert:10.0.0"
