@@ -6,18 +6,16 @@ import uk.co.mruoc.demo.domain.entity.Payment;
 @RequiredArgsConstructor
 public class PaymentProcessor {
 
-    private final PreparePayment preparePayment;
     private final PaymentRepository repository;
-    private final RequestApproval requestApproval;
+    private final PaymentUpdater updater;
+    private final PaymentCreator creator;
 
     public void process(Payment payment) {
-        String id = payment.getId();
-        if (repository.exists(id)) {
-            throw new PaymentAlreadyExistsException(id);
+        if (repository.exists(payment.getId())) {
+            updater.update(payment);
+        } else {
+            creator.create(payment);
         }
-        Payment prepared = preparePayment.prepare(payment);
-        repository.save(prepared);
-        requestApproval.requestApproval(prepared);
     }
 
 }

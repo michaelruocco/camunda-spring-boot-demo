@@ -6,17 +6,21 @@ import org.springframework.context.annotation.Configuration;
 import uk.co.mruoc.demo.adapter.camunda.AcceptPayment;
 import uk.co.mruoc.demo.adapter.camunda.ApprovalFormFactory;
 import uk.co.mruoc.demo.adapter.camunda.CamundaRequestApproval;
+import uk.co.mruoc.demo.adapter.camunda.CamundaUpdateApproval;
 import uk.co.mruoc.demo.adapter.camunda.PaymentConverter;
 import uk.co.mruoc.demo.adapter.camunda.RejectPayment;
 import uk.co.mruoc.demo.adapter.camunda.VariableExtractor;
 import uk.co.mruoc.demo.adapter.quote.QuoteClient;
 import uk.co.mruoc.demo.adapter.repository.InMemoryPaymentRepository;
+import uk.co.mruoc.demo.domain.service.PaymentCreator;
 import uk.co.mruoc.demo.domain.service.PaymentLoader;
 import uk.co.mruoc.demo.domain.service.PaymentProcessor;
 import uk.co.mruoc.demo.domain.service.PaymentRepository;
 import uk.co.mruoc.demo.domain.service.PaymentService;
+import uk.co.mruoc.demo.domain.service.PaymentUpdater;
 import uk.co.mruoc.demo.domain.service.PreparePayment;
 import uk.co.mruoc.demo.domain.service.RequestApproval;
+import uk.co.mruoc.demo.domain.service.UpdateApproval;
 
 @Configuration
 public class ApplicationConfig {
@@ -57,10 +61,29 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public PaymentProcessor paymentProcessor(PreparePayment preparePayment,
-                                             PaymentRepository repository,
-                                             RequestApproval requestApproval) {
-        return new PaymentProcessor(preparePayment, repository, requestApproval);
+    public PaymentCreator paymentCreator(PreparePayment preparePayment,
+                                         PaymentRepository repository,
+                                         RequestApproval requestApproval) {
+        return new PaymentCreator(preparePayment, repository, requestApproval);
+    }
+
+    @Bean
+    public UpdateApproval updateApproval() {
+        return new CamundaUpdateApproval();
+    }
+
+    @Bean
+    public PaymentUpdater paymentUpdater(PaymentLoader paymentLoader,
+                                         PaymentRepository repository,
+                                         UpdateApproval updateApproval) {
+        return new PaymentUpdater(paymentLoader, repository, updateApproval);
+    }
+
+    @Bean
+    public PaymentProcessor paymentProcessor(PaymentRepository repository,
+                                             PaymentUpdater updater,
+                                             PaymentCreator creator) {
+        return new PaymentProcessor(repository, updater, creator);
     }
 
     @Bean

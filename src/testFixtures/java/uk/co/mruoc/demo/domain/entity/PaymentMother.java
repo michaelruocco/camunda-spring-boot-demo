@@ -19,6 +19,10 @@ public class PaymentMother {
         return withStatus(Status.PENDING);
     }
 
+    public static Payment accepted() {
+        return withStatus(Status.ACCEPTED);
+    }
+
     public static Payment withStatus(Status status) {
         return builder().status(status).build();
     }

@@ -15,7 +15,7 @@ public class CamundaRequestApproval implements RequestApproval {
     private final PaymentConverter paymentConverter;
 
     @Override
-    public void requestApproval(Payment payment) {
+    public void request(Payment payment) {
         log.info("requesting approval for payment {}", payment);
         ProcessInstance process = triggerProcess(payment);
         log.info("triggered payment request {} for payment {}",

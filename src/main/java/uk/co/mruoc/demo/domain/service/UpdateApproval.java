@@ -2,8 +2,8 @@ package uk.co.mruoc.demo.domain.service;
 
 import uk.co.mruoc.demo.domain.entity.Payment;
 
-public interface RequestApproval {
+public interface UpdateApproval {
 
-    void request(Payment payment);
+    void update(Payment payment);
 
 }

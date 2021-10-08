@@ -35,4 +35,9 @@ public class Payment {
         return product.getCost();
     }
 
+    @JsonIgnore
+    public boolean isPending() {
+        return status == Status.PENDING;
+    }
+
 }

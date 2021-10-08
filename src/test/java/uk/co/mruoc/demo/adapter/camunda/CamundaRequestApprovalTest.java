@@ -32,7 +32,7 @@ class CamundaRequestApprovalTest {
         ProcessInstance instance = givenProcessInstanceWithId();
         when(builder.execute()).thenReturn(instance);
 
-        requestApproval.requestApproval(payment);
+        requestApproval.request(payment);
 
         InOrder inOrder = inOrder(builder);
         inOrder.verify(builder).setVariables(variables);
