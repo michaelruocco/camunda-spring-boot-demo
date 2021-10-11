@@ -18,7 +18,7 @@ public class AcceptPayment implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
-        Payment payment = loadPayment(execution);
+        var payment = loadPayment(execution);
         accept(payment);
     }
 
@@ -28,7 +28,7 @@ public class AcceptPayment implements JavaDelegate {
     }
 
     private void accept(Payment payment) {
-        Payment accepted = payment.accept();
+        var accepted = payment.accept();
         repository.save(accepted);
         log.info("accepted payment {}", accepted);
     }

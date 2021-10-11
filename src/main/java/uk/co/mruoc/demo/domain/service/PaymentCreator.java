@@ -11,7 +11,7 @@ public class PaymentCreator {
     private final RequestApproval requestApproval;
 
     public void create(Payment payment) {
-        Payment prepared = preparePayment.prepare(payment);
+        var prepared = preparePayment.prepare(payment);
         repository.save(prepared);
         requestApproval.request(prepared);
     }

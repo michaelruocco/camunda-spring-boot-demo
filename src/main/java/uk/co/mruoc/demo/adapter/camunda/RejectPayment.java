@@ -18,7 +18,7 @@ public class RejectPayment implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
-        Payment payment = loadPayment(execution);
+        var payment = loadPayment(execution);
         reject(payment);
     }
 
@@ -28,7 +28,7 @@ public class RejectPayment implements JavaDelegate {
     }
 
     private void reject(Payment payment) {
-        Payment rejected = payment.reject();
+        var rejected = payment.reject();
         repository.save(rejected);
         log.info("rejected payment {}", rejected);
     }

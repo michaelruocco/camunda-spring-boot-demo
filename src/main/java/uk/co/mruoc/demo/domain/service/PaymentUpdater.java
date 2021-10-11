@@ -11,7 +11,7 @@ public class PaymentUpdater {
     private final UpdateApproval updateApproval;
 
     public void update(Payment payment) {
-        Payment prepared = preparePayment.prepare(payment);
+        var prepared = preparePayment.prepare(payment);
         repository.save(prepared);
         updateApproval.update(prepared);
     }
