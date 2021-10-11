@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_17y89rb" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.10.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:process id="request-payment-approval" name="request-payment-approval" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_1" name="payment-requested">
+    <bpmn:startEvent id="payment-requested" name="payment-requested">
       <bpmn:outgoing>Flow_1b3onkb</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:serviceTask id="accept-payment" name="accept-payment" camunda:delegateExpression="#{acceptPayment}">
@@ -9,10 +9,10 @@
       <bpmn:incoming>cost-lt-1000</bpmn:incoming>
       <bpmn:outgoing>Flow_0har19j</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:endEvent id="payment-accepted" name="payment-accepted">
-      <bpmn:incoming>Flow_0har19j</bpmn:incoming>
+    <bpmn:endEvent id="payment-request-complete" name="payment-request-complete">
+      <bpmn:incoming>Flow_1qmu95m</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0har19j" sourceRef="accept-payment" targetRef="payment-accepted" />
+    <bpmn:sequenceFlow id="Flow_0har19j" sourceRef="accept-payment" targetRef="send-external-notification" />
     <bpmn:sequenceFlow id="Flow_1s5hi2z" sourceRef="auto-approve" targetRef="is-approved" />
     <bpmn:exclusiveGateway id="is-approved" name="approved?">
       <bpmn:incoming>Flow_1s5hi2z</bpmn:incoming>
@@ -20,9 +20,6 @@
       <bpmn:outgoing>Flow_0zb55rm</bpmn:outgoing>
       <bpmn:outgoing>Flow_11vjzgz</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:endEvent id="payment-rejected" name="payment-rejected">
-      <bpmn:incoming>Flow_0kewt5v</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0zb55rm" name="no" sourceRef="is-approved" targetRef="reject-payment">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!approved}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -30,7 +27,7 @@
       <bpmn:incoming>risk-gt-or-eq-150</bpmn:incoming>
       <bpmn:outgoing>Flow_1s5hi2z</bpmn:outgoing>
     </bpmn:businessRuleTask>
-    <bpmn:sequenceFlow id="Flow_0kewt5v" sourceRef="reject-payment" targetRef="payment-rejected" />
+    <bpmn:sequenceFlow id="Flow_0kewt5v" sourceRef="reject-payment" targetRef="send-external-notification" />
     <bpmn:serviceTask id="reject-payment" name="reject-payment" camunda:delegateExpression="#{rejectPayment}">
       <bpmn:incoming>Flow_0zb55rm</bpmn:incoming>
       <bpmn:outgoing>Flow_0kewt5v</bpmn:outgoing>
@@ -43,7 +40,7 @@
     <bpmn:sequenceFlow id="cost-gt-or-eq-1000" name="cost &#62;= £1000" sourceRef="requires-approval" targetRef="is-user-approval-required">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${cost&gt;=1000}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1b3onkb" sourceRef="StartEvent_1" targetRef="requires-approval" />
+    <bpmn:sequenceFlow id="Flow_1b3onkb" sourceRef="payment-requested" targetRef="requires-approval" />
     <bpmn:sequenceFlow id="cost-lt-1000" name="cost &#60; 1000" sourceRef="requires-approval" targetRef="accept-payment">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${cost&lt;1000}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -58,7 +55,7 @@
     <bpmn:sequenceFlow id="risk-gt-or-eq-150" name="risk-score &#62;= 150" sourceRef="is-user-approval-required" targetRef="auto-approve">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${riskScore&gt;=150}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:userTask id="user-approval" name="user-approval" camunda:formKey="embedded:app:forms/approve-payment.html" camunda:assignee="demo">
+    <bpmn:userTask id="user-approval" name="user-approval" camunda:asyncAfter="true" camunda:formKey="embedded:app:forms/approve-payment.html" camunda:assignee="demo">
       <bpmn:incoming>risk-lt-150</bpmn:incoming>
       <bpmn:outgoing>Flow_03e7a60</bpmn:outgoing>
     </bpmn:userTask>
@@ -66,6 +63,12 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${riskScore&lt;150}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_03e7a60" sourceRef="user-approval" targetRef="is-approved" />
+    <bpmn:sequenceFlow id="Flow_1qmu95m" sourceRef="send-external-notification" targetRef="payment-request-complete" />
+    <bpmn:sendTask id="send-external-notification" name="send-external-notification" camunda:asyncBefore="true" camunda:delegateExpression="#{sendExternalNotification}">
+      <bpmn:incoming>Flow_0har19j</bpmn:incoming>
+      <bpmn:incoming>Flow_0kewt5v</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qmu95m</bpmn:outgoing>
+    </bpmn:sendTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="request-payment-approval">
@@ -82,11 +85,9 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_104a6ow_di" bpmnElement="risk-gt-or-eq-150">
         <di:waypoint x="270" y="425" />
-        <di:waypoint x="270" y="463" />
-        <di:waypoint x="269" y="463" />
-        <di:waypoint x="269" y="500" />
+        <di:waypoint x="270" y="500" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="178" y="473" width="85" height="14" />
+          <dc:Bounds x="179" y="452" width="85" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_11vjzgz_di" bpmnElement="Flow_11vjzgz">
@@ -101,7 +102,7 @@
         <di:waypoint x="680" y="260" />
         <di:waypoint x="680" y="500" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="570" y="263" width="58" height="14" />
+          <dc:Bounds x="561" y="263" width="58" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1b3onkb_di" bpmnElement="Flow_1b3onkb">
@@ -117,8 +118,8 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0kewt5v_di" bpmnElement="Flow_0kewt5v">
-        <di:waypoint x="480" y="720" />
-        <di:waypoint x="480" y="782" />
+        <di:waypoint x="530" y="680" />
+        <di:waypoint x="630" y="680" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0zb55rm_di" bpmnElement="Flow_0zb55rm">
         <di:waypoint x="480" y="565" />
@@ -128,14 +129,18 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1s5hi2z_di" bpmnElement="Flow_1s5hi2z">
-        <di:waypoint x="319" y="540" />
+        <di:waypoint x="320" y="540" />
         <di:waypoint x="455" y="540" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0har19j_di" bpmnElement="Flow_0har19j">
         <di:waypoint x="680" y="580" />
+        <di:waypoint x="680" y="640" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qmu95m_di" bpmnElement="Flow_1qmu95m">
+        <di:waypoint x="680" y="720" />
         <di:waypoint x="680" y="782" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="payment-requested">
         <dc:Bounds x="462" y="122" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="455" y="86" width="49" height="27" />
@@ -144,22 +149,16 @@
       <bpmndi:BPMNShape id="Activity_1rio45x_di" bpmnElement="accept-payment">
         <dc:Bounds x="630" y="500" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_065ho7p_di" bpmnElement="payment-accepted">
+      <bpmndi:BPMNShape id="Event_065ho7p_di" bpmnElement="payment-request-complete">
         <dc:Bounds x="662" y="782" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="657" y="828" width="46" height="27" />
+          <dc:Bounds x="637" y="828" width="87" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0zl3lwa_di" bpmnElement="is-approved" isMarkerVisible="true">
         <dc:Bounds x="455" y="515" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="495" y="473" width="52" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_126ibw4_di" bpmnElement="payment-rejected">
-        <dc:Bounds x="462" y="782" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="438" y="825" width="85" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0q5esqf_di" bpmnElement="reject-payment">
@@ -180,8 +179,11 @@
       <bpmndi:BPMNShape id="Activity_0dc51ms_di" bpmnElement="user-approval">
         <dc:Bounds x="430" y="360" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1c4b203_di" bpmnElement="send-external-notification">
+        <dc:Bounds x="630" y="640" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_04aazpy_di" bpmnElement="auto-approve">
-        <dc:Bounds x="219" y="500" width="100" height="80" />
+        <dc:Bounds x="220" y="500" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

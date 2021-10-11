@@ -16,6 +16,8 @@ import java.util.stream.Stream;
 
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertThat;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.complete;
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.execute;
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.job;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.task;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.withVariables;
 import static org.camunda.bpm.extension.mockito.CamundaMockito.registerJavaDelegateMock;
@@ -41,20 +43,25 @@ class PaymentRequestBpmnTest {
 
     @ParameterizedTest
     @MethodSource("autoDecisionProductCostAndRiskScore")
-    void shouldAcceptOrRejectChargeBasedOnProductIdCostAndRiskScore(String productId, double cost, double riskScore, String delegateName, String endName) {
+    void shouldMakeAutoDecisionBasedOnProductIdCostAndRiskScore(String productId, double cost, double riskScore, String delegateName, String[] activityIds) {
         registerJavaDelegateMock(delegateName);
+        registerJavaDelegateMock("sendExternalNotification");
         Map<String, Object> variables = buildVariables(productId, cost, riskScore);
 
         ProcessInstance process = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables);
 
-        assertThat(process).hasPassed(endName).isEnded();
+        assertThat(process).isNotEnded().isWaitingAt("send-external-notification");
+        execute(job(process));
+
+        assertThat(process).hasPassed(activityIds).isEnded();
         verifyJavaDelegateMock(delegateName).executed();
     }
 
     @ParameterizedTest
     @MethodSource("userApprovalProductCostAndRiskScore")
-    void shouldRequireUserApprovalBasedOnItemNameValueAndRiskScore(String productId, double cost, double riskScore, boolean approved, String delegateName, String endName) {
+    void shouldRequireUserApprovalBasedOnItemNameValueAndRiskScore(String productId, double cost, double riskScore, boolean approved, String delegateName, String[] activityIds) {
         registerJavaDelegateMock(delegateName);
+        registerJavaDelegateMock("sendExternalNotification");
         Map<String, Object> variables = buildVariables(productId, cost, riskScore);
 
         ProcessInstanceWithVariables process = runtimeService.createProcessInstanceByKey(PROCESS_DEFINITION_KEY)
@@ -62,27 +69,42 @@ class PaymentRequestBpmnTest {
                 .executeWithVariablesInReturn();
 
         assertThat(process).isNotEnded().isWaitingAt("user-approval");
-
         complete(task(), isApproved(approved));
+        execute(job(process));
 
-        assertThat(process).hasPassed(endName).isEnded();
+        assertThat(process).isNotEnded().isWaitingAt("send-external-notification");
+        execute(job(process));
+
+        assertThat(process).hasPassed(activityIds).isEnded();
         verifyJavaDelegateMock(delegateName).executed();
     }
 
     private static Stream<Arguments> autoDecisionProductCostAndRiskScore() {
         return Stream.of(
-                Arguments.of("any-item", 999.99, 150, "acceptPayment", "payment-accepted"),
-                Arguments.of("any-item", 1000, 150, "rejectPayment", "payment-rejected"),
-                Arguments.of("abc-123", 1000, 150, "acceptPayment", "payment-accepted"),
-                Arguments.of("xyz-789", 1000, 150, "acceptPayment", "payment-accepted")
+                Arguments.of("any-item", 999.99, 150, "acceptPayment", acceptPaymentIds()),
+                Arguments.of("any-item", 1000, 150, "rejectPayment", rejectPaymentIds()),
+                Arguments.of("abc-123", 1000, 150, "acceptPayment", acceptPaymentIds()),
+                Arguments.of("xyz-789", 1000, 150, "acceptPayment", acceptPaymentIds())
         );
     }
 
     private static Stream<Arguments> userApprovalProductCostAndRiskScore() {
         return Stream.of(
-                Arguments.of("any-item", 1000, 0, true, "acceptPayment", "payment-accepted"),
-                Arguments.of("any-item", 1000, 149.99, false, "rejectPayment", "payment-rejected")
+                Arguments.of("any-item", 1000, 0, true, "acceptPayment", acceptPaymentIds()),
+                Arguments.of("any-item", 1000, 149.99, false, "rejectPayment", rejectPaymentIds())
         );
+    }
+
+    private static String[] acceptPaymentIds() {
+        return new String[]{"accept-payment", sendExternalNotificationId()};
+    }
+
+    private static String[] rejectPaymentIds() {
+        return new String[]{"reject-payment", sendExternalNotificationId()};
+    }
+
+    private static String sendExternalNotificationId() {
+        return "send-external-notification";
     }
 
     private static Map<String, Object> buildVariables(String productId, double cost, double riskScore) {
