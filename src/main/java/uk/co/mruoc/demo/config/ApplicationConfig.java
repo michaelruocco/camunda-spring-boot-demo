@@ -9,6 +9,7 @@ import uk.co.mruoc.demo.adapter.camunda.CamundaRequestApproval;
 import uk.co.mruoc.demo.adapter.camunda.CamundaUpdateApproval;
 import uk.co.mruoc.demo.adapter.camunda.PaymentConverter;
 import uk.co.mruoc.demo.adapter.camunda.RejectPayment;
+import uk.co.mruoc.demo.adapter.camunda.SendExternalNotification;
 import uk.co.mruoc.demo.adapter.camunda.VariableExtractor;
 import uk.co.mruoc.demo.adapter.quote.QuoteClient;
 import uk.co.mruoc.demo.adapter.repository.InMemoryPaymentRepository;
@@ -108,6 +109,11 @@ public class ApplicationConfig {
                                        PaymentLoader loader,
                                        PaymentRepository repository) {
         return new RejectPayment(extractor, loader, repository);
+    }
+
+    @Bean
+    public SendExternalNotification sendExternalNotification(VariableExtractor extractor) {
+        return new SendExternalNotification(extractor);
     }
 
     @Bean

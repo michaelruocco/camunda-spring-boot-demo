@@ -65,6 +65,9 @@
     <bpmn:sequenceFlow id="Flow_03e7a60" sourceRef="user-approval" targetRef="is-approved" />
     <bpmn:sequenceFlow id="Flow_1qmu95m" sourceRef="send-external-notification" targetRef="payment-request-complete" />
     <bpmn:sendTask id="send-external-notification" name="send-external-notification" camunda:asyncBefore="true" camunda:delegateExpression="#{sendExternalNotification}">
+      <bpmn:extensionElements>
+        <camunda:failedJobRetryTimeCycle>R3/PT30S</camunda:failedJobRetryTimeCycle>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0har19j</bpmn:incoming>
       <bpmn:incoming>Flow_0kewt5v</bpmn:incoming>
       <bpmn:outgoing>Flow_1qmu95m</bpmn:outgoing>
