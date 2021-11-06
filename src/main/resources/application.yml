@@ -4,3 +4,13 @@ camunda.bpm:
     password: demo
   filter:
     create: All
+
+keycloak:
+  auth-server-url: ${auth.server.url}
+  realm: ${auth.realm}
+  ssl-required: external
+  resource: ${auth.client.id}
+  credentials:
+    secret: ${auth.client.secret}
+  use-resource-role-mappings: true
+  bearer-only: true

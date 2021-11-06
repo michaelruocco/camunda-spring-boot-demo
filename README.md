@@ -34,5 +34,8 @@ you can ignore these by omitting the lintGradle task.
 To run the service locally:
 
 ```bash
-./gradlew bootRun
+./gradlew clean build buildImage composeUp
 ```
+
+This will build the application into a docker container and then runs the application container
+alongside a keycloak container which supports security and authentication.

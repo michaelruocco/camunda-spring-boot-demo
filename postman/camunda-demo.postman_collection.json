@@ -6,10 +6,141 @@
 	},
 	"item": [
 		{
-			"name": "request-payment-user-approval",
+			"name": "keycloak-create-token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json()",
+							"",
+							"postman.setEnvironmentVariable(\"auth-token\", json.token_type + \" \" + json.access_token)",
+							"postman.setEnvironmentVariable(\"auth-refresh-token\", json.refresh_token)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{auth-client-id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{auth-client-secret}}",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{auth-user}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{auth-password}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{auth-host}}/auth/realms/{{auth-realm}}/protocol/openid-connect/token",
+					"host": [
+						"{{auth-host}}"
+					],
+					"path": [
+						"auth",
+						"realms",
+						"{{auth-realm}}",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keycloak-refresh-token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json()",
+							"postman.setEnvironmentVariable(\"refresh-token\", json.refresh_token)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "{{auth-client-id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{auth-client-secret}}",
+							"type": "text"
+						},
+						{
+							"key": "refresh_token",
+							"value": "{{auth-refresh-token}}",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "refresh_token",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{auth-host}}/auth/realms/{{auth-realm}}/protocol/openid-connect/token",
+					"host": [
+						"{{auth-host}}"
+					],
+					"path": [
+						"auth",
+						"realms",
+						"{{auth-realm}}",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "request-payment-user-approval",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth-token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"id\": \"1234567890\",\n    \"product\": {\n        \"id\": \"abc-123\",\n        \"description\": \"demo widget\",\n        \"cost\": 1999.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
@@ -20,12 +151,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/payments",
-					"protocol": "http",
+					"raw": "{{camunda-host}}/payments",
 					"host": [
-						"localhost"
+						"{{camunda-host}}"
 					],
-					"port": "8080",
 					"path": [
 						"payments"
 					]
@@ -48,12 +177,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/payments",
-					"protocol": "http",
+					"raw": "{{camunda-host}}/payments",
 					"host": [
-						"localhost"
+						"{{camunda-host}}"
 					],
-					"port": "8080",
 					"path": [
 						"payments"
 					]
@@ -68,7 +195,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"1234567891\",\n    \"product\": {\n        \"id\": \"abc-789\",\n        \"description\": \"cheap demo widget\",\n        \"cost\": 999.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
+					"raw": "{\n    \"id\": \"1234567899\",\n    \"product\": {\n        \"id\": \"abc-789\",\n        \"description\": \"cheap demo widget\",\n        \"cost\": 999.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -76,12 +203,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/payments",
-					"protocol": "http",
+					"raw": "{{camunda-host}}/payments",
 					"host": [
-						"localhost"
+						"{{camunda-host}}"
 					],
-					"port": "8080",
 					"path": [
 						"payments"
 					]
@@ -93,7 +218,13 @@
 			"name": "request-payment-auto-rejected",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth-token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"id\": \"1234567892\",\n    \"product\": {\n        \"id\": \"efg-123\",\n        \"description\": \"risky demo widget\",\n        \"cost\": 1000\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 150\n}",
@@ -104,12 +235,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/payments",
-					"protocol": "http",
+					"raw": "{{camunda-host}}/payments",
 					"host": [
-						"localhost"
+						"{{camunda-host}}"
 					],
-					"port": "8080",
 					"path": [
 						"payments"
 					]
@@ -123,12 +252,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/payments/1234567890",
-					"protocol": "http",
+					"raw": "{{camunda-host}}/payments/1234567890",
 					"host": [
-						"localhost"
+						"{{camunda-host}}"
 					],
-					"port": "8080",
 					"path": [
 						"payments",
 						"1234567890"
