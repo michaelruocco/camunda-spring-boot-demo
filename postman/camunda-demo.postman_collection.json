@@ -15,7 +15,11 @@
 							"var json = pm.response.json()",
 							"",
 							"postman.setEnvironmentVariable(\"auth-token\", json.token_type + \" \" + json.access_token)",
-							"postman.setEnvironmentVariable(\"auth-refresh-token\", json.refresh_token)"
+							"postman.setEnvironmentVariable(\"auth-refresh-token\", json.refresh_token)",
+							"",
+							"pm.test(\"should return ok status\", function () {",
+							"    pm.response.to.have.status(200)",
+							"})"
 						],
 						"type": "text/javascript"
 					}
@@ -79,7 +83,11 @@
 					"script": {
 						"exec": [
 							"var json = pm.response.json()",
-							"postman.setEnvironmentVariable(\"refresh-token\", json.refresh_token)"
+							"postman.setEnvironmentVariable(\"refresh-token\", json.refresh_token)",
+							"",
+							"pm.test(\"should return ok status\", function () {",
+							"    pm.response.to.have.status(200)",
+							"})"
 						],
 						"type": "text/javascript"
 					}
@@ -131,7 +139,59 @@
 			"response": []
 		},
 		{
+			"name": "fail-with-no-auth-token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should return authorized status\", function () {",
+							"    pm.response.to.have.status(401)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"1234567890\",\n    \"product\": {\n        \"id\": \"abc-123\",\n        \"description\": \"demo widget\",\n        \"cost\": 1999.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{camunda-host}}/payments",
+					"host": [
+						"{{camunda-host}}"
+					],
+					"path": [
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "request-payment-user-approval",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should return ok status\", function () {",
+							"    pm.response.to.have.status(200)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -164,9 +224,28 @@
 		},
 		{
 			"name": "update-payment-user-approval",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should return ok status\", function () {",
+							"    pm.response.to.have.status(200)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth-token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"id\": \"1234567890\",\n    \"product\": {\n        \"id\": \"efg-345\",\n        \"description\": \"updated demo widget\",\n        \"cost\": 1888.88\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 125\n}",
@@ -190,9 +269,28 @@
 		},
 		{
 			"name": "request-payment-auto-approved",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should return ok status\", function () {",
+							"    pm.response.to.have.status(200)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth-token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"id\": \"1234567899\",\n    \"product\": {\n        \"id\": \"abc-789\",\n        \"description\": \"cheap demo widget\",\n        \"cost\": 999.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
@@ -216,6 +314,19 @@
 		},
 		{
 			"name": "request-payment-auto-rejected",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should return ok status\", function () {",
+							"    pm.response.to.have.status(200)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -247,10 +358,65 @@
 			"response": []
 		},
 		{
-			"name": "get-payment",
+			"name": "get-payments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should return ok status\", function () {",
+							"    pm.response.to.have.status(200)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth-token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{camunda-host}}/payments",
+					"host": [
+						"{{camunda-host}}"
+					],
+					"path": [
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-payment-by-id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should return ok status\", function () {",
+							"    pm.response.to.have.status(200)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth-token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{camunda-host}}/payments/1234567890",
 					"host": [

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import uk.co.mruoc.demo.domain.entity.Payment;
 import uk.co.mruoc.demo.domain.service.PaymentRepository;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +26,11 @@ public class InMemoryPaymentRepository implements PaymentRepository {
     @Override
     public Optional<Payment> read(String id) {
         return Optional.ofNullable(payments.get(id));
+    }
+
+    @Override
+    public Collection<Payment> readAll() {
+        return payments.values();
     }
 
 }

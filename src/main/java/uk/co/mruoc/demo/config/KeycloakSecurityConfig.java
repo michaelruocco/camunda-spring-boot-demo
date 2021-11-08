@@ -19,15 +19,21 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 @EnableWebSecurity
 public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
+    private static final String PAYMENTS_URI = "/payments/**";
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
-        http.authorizeRequests()
-                .antMatchers("/payments")
+        http.csrf()
+                .ignoringAntMatchers(PAYMENTS_URI)
+                .and()
+                .requestMatchers().antMatchers(PAYMENTS_URI)
+                .and()
+                .authorizeRequests()
+                .antMatchers(PAYMENTS_URI)
                 .hasAnyRole("user-role")
                 .anyRequest()
                 .permitAll();
-        http.csrf().disable();
     }
 
     @Autowired

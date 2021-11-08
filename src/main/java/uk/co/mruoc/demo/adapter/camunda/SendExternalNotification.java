@@ -12,11 +12,11 @@ public class SendExternalNotification implements JavaDelegate {
     private final VariableExtractor extractor;
 
     @Override
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
         String id = extractor.extractPaymentId(execution);
         log.info("sending external notification {}", id);
         if (id.endsWith("9")) {
-            throw new RuntimeException(String.format("failed to send external notification for %s", id));
+            throw new ExternalNotificationFailedException(id);
         }
     }
 

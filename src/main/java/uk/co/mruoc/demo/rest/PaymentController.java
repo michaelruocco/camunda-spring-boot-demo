@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.co.mruoc.demo.domain.entity.Payment;
 import uk.co.mruoc.demo.domain.service.PaymentService;
 
+import java.util.Collection;
+
 @RestController
 @RequestMapping("/payments")
 public class PaymentController {
@@ -29,4 +31,10 @@ public class PaymentController {
     public Payment get(@PathVariable("id") String id) {
         return paymentService.load(id);
     }
+
+    @GetMapping
+    public Collection<Payment> getAll() {
+        return paymentService.load();
+    }
+
 }
