@@ -5,6 +5,7 @@ import uk.co.mruoc.demo.domain.entity.Payment;
 import uk.co.mruoc.demo.domain.entity.PaymentMother;
 import uk.co.mruoc.demo.domain.service.PaymentRepository;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,6 +31,23 @@ class InMemoryPaymentRepositoryTest {
         Optional<Payment> loaded = repository.read(payment.getId());
 
         assertThat(loaded).contains(payment);
+    }
+
+    @Test
+    void shouldReturnEmptyPaymentsIfNoneExist() {
+        Collection<Payment> payments = repository.readAll();
+
+        assertThat(payments).isEmpty();
+    }
+
+    @Test
+    void shouldReturnAllPayments() {
+        Payment payment = PaymentMother.build();
+        repository.save(payment);
+
+        Collection<Payment> payments = repository.readAll();
+
+        assertThat(payments).containsExactly(payment);
     }
 
 }

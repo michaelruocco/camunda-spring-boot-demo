@@ -5,6 +5,9 @@ import uk.co.mruoc.demo.domain.entity.Payment;
 import uk.co.mruoc.demo.domain.entity.PaymentMother;
 import uk.co.mruoc.demo.domain.service.PaymentService;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -47,10 +50,25 @@ class PaymentControllerTest {
         assertThat(payment).isEqualTo(expectedPayment);
     }
 
+    @Test
+    void shouldGetAllPayments() {
+        Collection<Payment> expectedPayments = givenPaymentsLoaded();
+
+        Collection<Payment> payments = controller.getAll();
+
+        assertThat(payments).isEqualTo(expectedPayments);
+    }
+
     private Payment givenPaymentLoadedById(String id) {
         Payment payment = PaymentMother.withId(id);
         when(service.load(id)).thenReturn(payment);
         return payment;
+    }
+
+    private Collection<Payment> givenPaymentsLoaded() {
+        Collection<Payment> payments = Collections.singleton(givenPaymentLoadedById("1"));
+        when(service.load()).thenReturn(payments);
+        return payments;
     }
 
 }

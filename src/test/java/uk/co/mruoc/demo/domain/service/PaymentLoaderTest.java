@@ -3,6 +3,8 @@ package uk.co.mruoc.demo.domain.service;
 import org.junit.jupiter.api.Test;
 import uk.co.mruoc.demo.domain.entity.Payment;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,6 +39,16 @@ class PaymentLoaderTest {
         Payment payment = loader.load(id);
 
         assertThat(payment).isEqualTo(expectedPayment);
+    }
+
+    @Test
+    void shouldReturnAllPayments() {
+        Collection<Payment> expectedPayments = Collections.singleton(mock(Payment.class));
+        when(repository.readAll()).thenReturn(expectedPayments);
+
+        Collection<Payment> payments = loader.load();
+
+        assertThat(payments).isEqualTo(expectedPayments);
     }
 
 }

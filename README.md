@@ -34,7 +34,7 @@ you can ignore these by omitting the lintGradle task.
 To run the service locally:
 
 ```bash
-./gradlew clean spotlessApply build buildImage composeUp postman composeDown
+./gradlew clean spotlessApply build buildImage composeUp
 ```
 
 This will build the application into a docker container and then runs the application container
