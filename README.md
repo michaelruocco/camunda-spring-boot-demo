@@ -37,5 +37,11 @@ To run the service locally:
 ./gradlew clean spotlessApply build buildImage composeUp
 ```
 
+To run spin up service, run postman tests locally and spin service down again:
+
+```bash
+./gradlew clean build buildImage composeUp postman composeDown
+```
+
 This will build the application into a docker container and then runs the application container
 alongside a keycloak container which supports security and authentication.

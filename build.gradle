@@ -15,6 +15,7 @@ plugins {
     id "io.spring.dependency-management" version "1.0.11.RELEASE"
     id "com.bmuschko.docker-remote-api" version "7.1.0"
     id "com.avast.gradle.docker-compose" version "0.14.9"
+    id "com.github.node-gradle.node" version "3.1.1"
 }
 
 group "com.github.michaelruocco"
@@ -140,6 +141,21 @@ task buildImage(type: DockerBuildImage) {
 
 dockerCompose {
     environment.put 'APP_VERSION', version
+}
+
+task installNewman(type: NpmTask) {
+    args = ['install', 'newman', '--save-dev']
+}
+
+task postman(type: NpxTask) {
+    dependsOn installNewman
+    command = 'newman'
+    args = [
+            'run',
+            '--bail', 'true',
+            '--environment', 'postman/camunda-demo-local.postman_environment.json',
+            'postman/camunda-demo.postman_collection.json',
+    ]
 }
 
 def gitUrl = "https://github.com/michaelruocco/camunda-spring-boot-demo"
