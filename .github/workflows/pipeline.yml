@@ -90,7 +90,7 @@ jobs:
           ./gradlew currentVersion
 
       - name: Build Image
-        run: ./gradlew buildImage
+        run: ./gradlew assemble buildImage
 
       - name: Print New Version
         run: ./gradlew currentVersion -q -Prelease.quiet

@@ -31,9 +31,6 @@ public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
     private RestApiSecurityConfigProperties properties;
 
     @Inject
-    private IdentityService identityService;
-
-    @Inject
     private ApplicationContext applicationContext;
 
     @Override
@@ -64,7 +61,7 @@ public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public FilterRegistrationBean<KeycloakAuthenticationFilter> keycloakAuthenticationFilter() {
+    public FilterRegistrationBean<KeycloakAuthenticationFilter> keycloakAuthenticationFilter(IdentityService identityService) {
         FilterRegistrationBean<KeycloakAuthenticationFilter> filterRegistration = new FilterRegistrationBean<>();
         filterRegistration.setFilter(new KeycloakAuthenticationFilter(identityService));
         filterRegistration.setOrder(102); // make sure the filter is registered after the Spring Security Filter Chain
