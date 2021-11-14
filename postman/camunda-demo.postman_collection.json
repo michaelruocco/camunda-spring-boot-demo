@@ -6,429 +6,603 @@
 	},
 	"item": [
 		{
-			"name": "keycloak-create-token",
-			"event": [
+			"name": "authorization",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var json = pm.response.json()",
-							"",
-							"postman.setEnvironmentVariable(\"auth-token\", json.token_type + \" \" + json.access_token)",
-							"postman.setEnvironmentVariable(\"auth-refresh-token\", json.refresh_token)",
-							"",
-							"pm.test(\"should return ok status\", function () {",
-							"    pm.response.to.have.status(200)",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
+					"name": "keycloak-create-token",
+					"event": [
 						{
-							"key": "grant_type",
-							"value": "password",
-							"type": "text"
-						},
-						{
-							"key": "client_id",
-							"value": "{{auth-client-id}}",
-							"type": "text"
-						},
-						{
-							"key": "client_secret",
-							"value": "{{auth-client-secret}}",
-							"type": "text"
-						},
-						{
-							"key": "username",
-							"value": "{{auth-user}}",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "{{auth-password}}",
-							"type": "text"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json()",
+									"",
+									"postman.setEnvironmentVariable(\"auth-token\", json.token_type + \" \" + json.access_token)",
+									"postman.setEnvironmentVariable(\"auth-refresh-token\", json.refresh_token)",
+									"",
+									"pm.test(\"should return ok status\", function () {",
+									"    pm.response.to.have.status(200)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
 						}
-					]
-				},
-				"url": {
-					"raw": "{{auth-host}}/auth/realms/{{auth-realm}}/protocol/openid-connect/token",
-					"host": [
-						"{{auth-host}}"
 					],
-					"path": [
-						"auth",
-						"realms",
-						"{{auth-realm}}",
-						"protocol",
-						"openid-connect",
-						"token"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "keycloak-refresh-token",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var json = pm.response.json()",
-							"postman.setEnvironmentVariable(\"refresh-token\", json.refresh_token)",
-							"",
-							"pm.test(\"should return ok status\", function () {",
-							"    pm.response.to.have.status(200)",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "client_id",
-							"value": "{{auth-client-id}}",
-							"type": "text"
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{auth-client-id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{auth-client-secret}}",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "demo-admin",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "welcomeAdmin01",
+									"type": "text"
+								}
+							]
 						},
+						"url": {
+							"raw": "{{auth-host}}/auth/realms/{{auth-realm}}/protocol/openid-connect/token",
+							"host": [
+								"{{auth-host}}"
+							],
+							"path": [
+								"auth",
+								"realms",
+								"{{auth-realm}}",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create-auth-process-definition",
+					"event": [
 						{
-							"key": "client_secret",
-							"value": "{{auth-client-secret}}",
-							"type": "text"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"should return ok status\", function () {",
+									"    pm.response.to.have.status(200)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{auth-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": 1,\n    \"permissions\": [\n        \"ALL\"\n    ],\n    \"groupId\": \"camunda-user\",\n    \"resourceType\": 6,\n    \"resourceId\": \"*\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
+						"url": {
+							"raw": "{{camunda-host}}/engine-rest/authorization/create",
+							"host": [
+								"{{camunda-host}}"
+							],
+							"path": [
+								"engine-rest",
+								"authorization",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create-auth-process-instance",
+					"event": [
 						{
-							"key": "refresh_token",
-							"value": "{{auth-refresh-token}}",
-							"type": "text"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"should return ok status\", function () {",
+									"    pm.response.to.have.status(200)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{auth-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": 1,\n    \"permissions\": [\n        \"ALL\"\n    ],\n    \"groupId\": \"camunda-user\",\n    \"resourceType\": 8,\n    \"resourceId\": \"*\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
+						"url": {
+							"raw": "{{camunda-host}}/engine-rest/authorization/create",
+							"host": [
+								"{{camunda-host}}"
+							],
+							"path": [
+								"engine-rest",
+								"authorization",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "payments",
+			"item": [
+				{
+					"name": "keycloak-create-token",
+					"event": [
 						{
-							"key": "grant_type",
-							"value": "refresh_token",
-							"type": "text"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json()",
+									"",
+									"postman.setEnvironmentVariable(\"auth-token\", json.token_type + \" \" + json.access_token)",
+									"postman.setEnvironmentVariable(\"auth-refresh-token\", json.refresh_token)",
+									"",
+									"pm.test(\"should return ok status\", function () {",
+									"    pm.response.to.have.status(200)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
 						}
-					]
-				},
-				"url": {
-					"raw": "{{auth-host}}/auth/realms/{{auth-realm}}/protocol/openid-connect/token",
-					"host": [
-						"{{auth-host}}"
 					],
-					"path": [
-						"auth",
-						"realms",
-						"{{auth-realm}}",
-						"protocol",
-						"openid-connect",
-						"token"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "fail-with-no-auth-token",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"should return authorized status\", function () {",
-							"    pm.response.to.have.status(401)",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"id\": \"1234567890\",\n    \"product\": {\n        \"id\": \"abc-123\",\n        \"description\": \"demo widget\",\n        \"cost\": 1999.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{auth-client-id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{auth-client-secret}}",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "{{auth-user}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{auth-password}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{auth-host}}/auth/realms/{{auth-realm}}/protocol/openid-connect/token",
+							"host": [
+								"{{auth-host}}"
+							],
+							"path": [
+								"auth",
+								"realms",
+								"{{auth-realm}}",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{camunda-host}}/payments",
-					"host": [
-						"{{camunda-host}}"
-					],
-					"path": [
-						"payments"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "request-payment-user-approval",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"should return ok status\", function () {",
-							"    pm.response.to.have.status(200)",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{auth-token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"id\": \"1234567890\",\n    \"product\": {\n        \"id\": \"abc-123\",\n        \"description\": \"demo widget\",\n        \"cost\": 1999.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "keycloak-refresh-token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json()",
+									"postman.setEnvironmentVariable(\"refresh-token\", json.refresh_token)",
+									"",
+									"pm.test(\"should return ok status\", function () {",
+									"    pm.response.to.have.status(200)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "{{camunda-host}}/payments",
-					"host": [
-						"{{camunda-host}}"
 					],
-					"path": [
-						"payments"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "update-payment-user-approval",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"should return ok status\", function () {",
-							"    pm.response.to.have.status(200)",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{auth-token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"id\": \"1234567890\",\n    \"product\": {\n        \"id\": \"efg-345\",\n        \"description\": \"updated demo widget\",\n        \"cost\": 1888.88\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 125\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "{{auth-client-id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{auth-client-secret}}",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "{{auth-refresh-token}}",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "refresh_token",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{auth-host}}/auth/realms/{{auth-realm}}/protocol/openid-connect/token",
+							"host": [
+								"{{auth-host}}"
+							],
+							"path": [
+								"auth",
+								"realms",
+								"{{auth-realm}}",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{camunda-host}}/payments",
-					"host": [
-						"{{camunda-host}}"
-					],
-					"path": [
-						"payments"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "request-payment-auto-approved",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"should return ok status\", function () {",
-							"    pm.response.to.have.status(200)",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{auth-token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"id\": \"1234567899\",\n    \"product\": {\n        \"id\": \"abc-789\",\n        \"description\": \"cheap demo widget\",\n        \"cost\": 999.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "fail-with-no-auth-token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"should return authorized status\", function () {",
+									"    pm.response.to.have.status(401)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "{{camunda-host}}/payments",
-					"host": [
-						"{{camunda-host}}"
 					],
-					"path": [
-						"payments"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "request-payment-auto-rejected",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"should return ok status\", function () {",
-							"    pm.response.to.have.status(200)",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{auth-token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"id\": \"1234567892\",\n    \"product\": {\n        \"id\": \"efg-123\",\n        \"description\": \"risky demo widget\",\n        \"cost\": 1000\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 150\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"1234567890\",\n    \"product\": {\n        \"id\": \"abc-123\",\n        \"description\": \"demo widget\",\n        \"cost\": 1999.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{camunda-host}}/payments",
+							"host": [
+								"{{camunda-host}}"
+							],
+							"path": [
+								"payments"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{camunda-host}}/payments",
-					"host": [
-						"{{camunda-host}}"
-					],
-					"path": [
-						"payments"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "get-payments",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"should return ok status\", function () {",
-							"    pm.response.to.have.status(200)",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{auth-token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{camunda-host}}/payments",
-					"host": [
-						"{{camunda-host}}"
+					"name": "request-payment-user-approval",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"should return ok status\", function () {",
+									"    pm.response.to.have.status(200)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"path": [
-						"payments"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "get-payment-by-id",
-			"event": [
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{auth-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"1234567890\",\n    \"product\": {\n        \"id\": \"abc-123\",\n        \"description\": \"demo widget\",\n        \"cost\": 1999.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{camunda-host}}/payments",
+							"host": [
+								"{{camunda-host}}"
+							],
+							"path": [
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"should return ok status\", function () {",
-							"    pm.response.to.have.status(200)",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{auth-token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{camunda-host}}/payments/1234567890",
-					"host": [
-						"{{camunda-host}}"
+					"name": "update-payment-user-approval",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"should return ok status\", function () {",
+									"    pm.response.to.have.status(200)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"path": [
-						"payments",
-						"1234567890"
-					]
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{auth-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"1234567890\",\n    \"product\": {\n        \"id\": \"efg-345\",\n        \"description\": \"updated demo widget\",\n        \"cost\": 1888.88\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 125\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{camunda-host}}/payments",
+							"host": [
+								"{{camunda-host}}"
+							],
+							"path": [
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "request-payment-auto-approved",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"should return ok status\", function () {",
+									"    pm.response.to.have.status(200)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{auth-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"1234567899\",\n    \"product\": {\n        \"id\": \"abc-789\",\n        \"description\": \"cheap demo widget\",\n        \"cost\": 999.99\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{camunda-host}}/payments",
+							"host": [
+								"{{camunda-host}}"
+							],
+							"path": [
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "request-payment-auto-rejected",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"should return ok status\", function () {",
+									"    pm.response.to.have.status(200)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{auth-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"1234567892\",\n    \"product\": {\n        \"id\": \"efg-123\",\n        \"description\": \"risky demo widget\",\n        \"cost\": 1000\n    },\n    \"account\": {\n        \"id\": \"aaa-bbb-ccc\",\n        \"owner\": \"Joe Bloggs\"\n    },\n    \"riskScore\": 150\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{camunda-host}}/payments",
+							"host": [
+								"{{camunda-host}}"
+							],
+							"path": [
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-payments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"should return ok status\", function () {",
+									"    pm.response.to.have.status(200)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{auth-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{camunda-host}}/payments",
+							"host": [
+								"{{camunda-host}}"
+							],
+							"path": [
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-payment-by-id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"should return ok status\", function () {",
+									"    pm.response.to.have.status(200)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{auth-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{camunda-host}}/payments/1234567890",
+							"host": [
+								"{{camunda-host}}"
+							],
+							"path": [
+								"payments",
+								"1234567890"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	]
 }

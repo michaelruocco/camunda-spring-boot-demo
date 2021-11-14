@@ -3,8 +3,6 @@ package uk.co.mruoc.demo.adapter.quote;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
@@ -28,16 +26,6 @@ class QuoteClientTest {
     }
 
     @Test
-    void shouldThrowExceptionIfResponseHasEmptyQuote() {
-        QuoteResponse response = givenResponseWith(null);
-        givenResponseReturned(response);
-
-        Throwable error = catchThrowable(client::loadRandomQuote);
-
-        assertThat(error).isInstanceOf(CouldNotRetrieveQuoteException.class);
-    }
-
-    @Test
     void shouldReturnQuote() {
         String expectedQuote = "test quote";
         QuoteResponse response = givenResponseWith(expectedQuote);
@@ -49,13 +37,13 @@ class QuoteClientTest {
     }
 
     private void givenResponseReturned(QuoteResponse response) {
-        String url = String.format("%s/api/v1/random?count=1", HOST);
+        String url = String.format("%s/random", HOST);
         when(restTemplate.getForObject(url, QuoteResponse.class)).thenReturn(response);
     }
 
     private QuoteResponse givenResponseWith(String quote) {
         QuoteResponse response = mock(QuoteResponse.class);
-        when(response.getFirstQuote()).thenReturn(Optional.ofNullable(quote));
+        when(response.getContent()).thenReturn(quote);
         return response;
     }
 

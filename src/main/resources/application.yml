@@ -1,16 +1,54 @@
 camunda.bpm:
-  admin-user:
-    id: demo
-    password: demo
+  authorization:
+    enabled: true
   filter:
     create: All
+  webapp.application-path:
+
+server.servlet.context-path: /camunda
 
 keycloak:
-  auth-server-url: ${auth.server.url}
-  realm: ${auth.realm}
-  ssl-required: external
-  resource: ${auth.client.id}
-  credentials:
-    secret: ${auth.client.secret}
-  use-resource-role-mappings: true
-  bearer-only: true
+  url.auth: ${auth.server.http}
+  url.token: ${auth.server.http}
+  url.plugin: ${auth.server.https}
+  client.id: ${auth.client.id}
+  client.secret: ${auth.client.secret}
+
+spring:
+  jersey:
+    application-path: /engine-rest
+  security.oauth2.client:
+    registration:
+      keycloak:
+        provider: keycloak
+        client-id: ${auth.client.id}
+        client-secret: ${auth.client.secret}
+        authorization-grant-type: authorization_code
+        redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+        scope: openid, profile, email
+    provider:
+      keycloak:
+        issuer-uri: ${auth.server.http}/auth/realms/${auth.realm}
+        authorization-uri: ${auth.server.http}/auth/realms/${auth.realm}/protocol/openid-connect/auth
+        user-info-uri: ${auth.server.http}/auth/realms/${auth.realm}/protocol/openid-connect/userinfo
+        token-uri: ${auth.server.http}/auth/realms/${auth.realm}/protocol/openid-connect/token
+        jwk-set-uri: ${auth.server.http}/auth/realms/${auth.realm}/protocol/openid-connect/certs
+        user-name-attribute: preferred_username
+
+rest.security:
+  enabled: true
+  provider: keycloak
+  required-audience: camunda-rest-api
+
+plugin.identity.keycloak:
+  keycloakIssuerUrl: ${auth.server.http}/auth/realms/${auth.realm}
+  keycloakAdminUrl: ${auth.server.http}/auth/admin/realms/${auth.realm}
+  clientId: ${auth.client.id}
+  clientSecret: ${auth.client.secret}
+  useEmailAsCamundaUserId: false
+  useUsernameAsCamundaUserId: true
+  useGroupPathAsCamundaGroupId: true
+  administratorGroupName: ${auth.admin.group}
+  disableSSLCertificateValidation: true
+
+logging.level.org.springframework.security: DEBUG

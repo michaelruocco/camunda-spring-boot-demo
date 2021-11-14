@@ -48,6 +48,9 @@ jobs:
       - name: Test
         run: ./gradlew test
 
+      - name: Integration Test
+        run: ./gradlew integrationTest
+
       - name: Sonar Analysis
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -85,3 +88,15 @@ jobs:
           ./gradlew release -Prelease.customUsername=${{ github.actor }} -Prelease.customPassword=${{ github.token }}
           ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
           ./gradlew currentVersion
+
+      - name: Build Image
+        run: ./gradlew buildImage
+
+      - name: Print New Version
+        run: ./gradlew currentVersion -q -Prelease.quiet
+
+      - name: Test Postman Collection
+        run: |
+          ./gradlew composeUp
+          ./gradlew postman
+          ./gradlew composeDown

@@ -8,8 +8,8 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class QuoteClient {
 
-    private static final String DEFAULT_HOST = "https://private-anon-08dad75e4b-goquotes.apiary-proxy.com";
-    private static final String URL_TEMPLATE = "%s/api/v1/random?count=1";
+    private static final String DEFAULT_HOST = "https://api.quotable.io";
+    private static final String URL_TEMPLATE = "%s/random";
 
     private final String host;
     private final RestTemplate template;
@@ -25,7 +25,7 @@ public class QuoteClient {
         if (response == null) {
             throw new CouldNotRetrieveQuoteException();
         }
-        return response.getFirstQuote().orElseThrow(CouldNotRetrieveQuoteException::new);
+        return response.getContent();
     }
 
     private static String toUrl(String host) {

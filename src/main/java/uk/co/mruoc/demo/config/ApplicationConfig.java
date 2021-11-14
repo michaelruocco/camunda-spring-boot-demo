@@ -23,6 +23,10 @@ import uk.co.mruoc.demo.domain.service.PreparePayment;
 import uk.co.mruoc.demo.domain.service.RequestApproval;
 import uk.co.mruoc.demo.domain.service.UpdateApproval;
 
+
+
+import static org.apache.http.ssl.SSLContexts.*;
+
 @Configuration
 public class ApplicationConfig {
 

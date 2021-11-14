@@ -25,7 +25,7 @@ This repo contains a simple demo application using [Camunda](https://camunda.com
 // runs tests
 // checks for gradle issues
 // checks dependency versions
-./gradlew clean currentVersion dependencyUpdates spotlessApply build
+./gradlew clean currentVersion dependencyUpdates spotlessApply build integrationTest
 ```
 
 *Note* the gradle lint plugin finds a number of warning violations related to spring boot,
@@ -34,7 +34,7 @@ you can ignore these by omitting the lintGradle task.
 To run the service locally:
 
 ```bash
-./gradlew clean spotlessApply build buildImage composeUp
+./gradlew clean spotlessApply build integrationTest buildImage composeUp
 ```
 
 To run spin up service, run postman tests locally and spin service down again:
