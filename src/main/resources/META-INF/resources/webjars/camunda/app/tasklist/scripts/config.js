@@ -1,5 +1,5 @@
 export default {
   customScripts: [
-    'custom/logout'
+    "custom/logout"
   ]
 };
