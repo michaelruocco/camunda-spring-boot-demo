@@ -29,10 +29,12 @@ spring:
     provider:
       keycloak:
         issuer-uri: ${auth.server.http}/auth/realms/${auth.realm}
-        authorization-uri: ${auth.server.http}/auth/realms/${auth.realm}/protocol/openid-connect/auth
-        user-info-uri: ${auth.server.http}/auth/realms/${auth.realm}/protocol/openid-connect/userinfo
-        token-uri: ${auth.server.http}/auth/realms/${auth.realm}/protocol/openid-connect/token
-        jwk-set-uri: ${auth.server.http}/auth/realms/${auth.realm}/protocol/openid-connect/certs
+        openid-connect-uri: ${spring.security.oauth2.client.provider.keycloak.issuer-uri}/protocol/openid-connect
+        authorization-uri: ${spring.security.oauth2.client.provider.keycloak.openid-connect-uri}/auth
+        logout-uri: ${spring.security.oauth2.client.provider.keycloak.openid-connect-uri}/logout
+        user-info-uri: ${spring.security.oauth2.client.provider.keycloak.openid-connect-uri}/userinfo
+        token-uri: ${spring.security.oauth2.client.provider.keycloak.openid-connect-uri}/token
+        jwk-set-uri: ${spring.security.oauth2.client.provider.keycloak.openid-connect-uri}/certs
         user-name-attribute: preferred_username
 
 rest.security:
@@ -41,7 +43,7 @@ rest.security:
   required-audience: camunda-rest-api
 
 plugin.identity.keycloak:
-  keycloakIssuerUrl: ${auth.server.http}/auth/realms/${auth.realm}
+  keycloakIssuerUrl: ${spring.security.oauth2.client.provider.keycloak.issuer-uri}
   keycloakAdminUrl: ${auth.server.http}/auth/admin/realms/${auth.realm}
   clientId: ${auth.client.id}
   clientSecret: ${auth.client.secret}

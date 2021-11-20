@@ -9,8 +9,8 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 public class LogoutSecurityConfig {
 
     @Bean
-    public LogoutSuccessHandler logoutSuccessHandler(@Value("${spring.security.oauth2.client.provider.keycloak.authorization-uri}") String authUri) {
-        return new KeycloakLogoutHandler(authUri);
+    public LogoutSuccessHandler logoutSuccessHandler(@Value("${spring.security.oauth2.client.provider.keycloak.logout-uri}") String logoutUri) {
+        return new KeycloakLogoutHandler(logoutUri);
     }
 
 }
