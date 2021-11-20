@@ -22,5 +22,4 @@ public class UserGroupIdFinder {
                 .collect(Collectors.toList());
     }
 
-
 }
