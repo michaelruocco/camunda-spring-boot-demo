@@ -27,6 +27,7 @@ ext {
 
     junitVersion = "5.8.1"
     keycloakVersion = "15.0.2"
+    mockitoVersion = "4.1.0"
 
     imageName = "michaelruocco/${project.name}"
 }
@@ -77,7 +78,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
     testImplementation "org.assertj:assertj-core:3.21.0"
     testImplementation "net.javacrumbs.json-unit:json-unit-assertj:2.28.0"
-    testImplementation "org.mockito:mockito-core:4.1.0"
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "org.camunda.bpm.extension:camunda-bpm-junit5:1.0.2"
     testImplementation "org.camunda.bpm.extension.mockito:camunda-bpm-mockito:5.16.0"
     testImplementation "org.camunda.bpm.assert:camunda-bpm-assert:13.0.0"
@@ -88,6 +89,8 @@ dependencies {
     testFixturesCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testFixturesAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testFixturesImplementation "com.github.michaelruocco:file-loader:6.0.1"
+    testFixturesImplementation "org.camunda.bpm:camunda-engine:${camundaVersion}"
+    testFixturesImplementation "org.mockito:mockito-core:${mockitoVersion}"
 }
 
 javadoc.options.addStringOption('Xdoclint:none', '-quiet')
