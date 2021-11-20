@@ -50,20 +50,20 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public FilterRegistrationBean<ContainerBasedAuthenticationFilter> containerBasedAuthenticationFilter() {
-        FilterRegistrationBean<ContainerBasedAuthenticationFilter> filterRegistration = new FilterRegistrationBean<>();
-        filterRegistration.setFilter(new ContainerBasedAuthenticationFilter());
-        filterRegistration.setInitParameters(Collections.singletonMap("authentication-provider", KeycloakAuthenticationProvider.class.getName()));
-        filterRegistration.setOrder(101); // make sure the filter is registered after the Spring Security Filter Chain
-        filterRegistration.addUrlPatterns("/app/*");
-        return filterRegistration;
+        FilterRegistrationBean<ContainerBasedAuthenticationFilter> bean = new FilterRegistrationBean<>();
+        bean.setFilter(new ContainerBasedAuthenticationFilter());
+        bean.setInitParameters(Collections.singletonMap("authentication-provider", KeycloakAuthenticationProvider.class.getName()));
+        bean.setOrder(101); // make sure the filter is registered after the Spring Security Filter Chain
+        bean.addUrlPatterns("/app/*");
+        return bean;
     }
 
     @Bean
     public FilterRegistrationBean<ForwardedHeaderFilter> forwardedHeaderFilter() {
-        FilterRegistrationBean<ForwardedHeaderFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new ForwardedHeaderFilter());
-        filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return filterRegistrationBean;
+        FilterRegistrationBean<ForwardedHeaderFilter> bean = new FilterRegistrationBean<>();
+        bean.setFilter(new ForwardedHeaderFilter());
+        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return bean;
     }
 
     @Bean

@@ -55,8 +55,7 @@ public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
         NimbusJwtDecoder jwtDecoder = JwtDecoders.fromOidcIssuerLocation(issuerUri);
         OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator(properties.getRequiredAudience());
         OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuerUri);
-        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
-        jwtDecoder.setJwtValidator(withAudience);
+        jwtDecoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator));
         return jwtDecoder;
     }
 
@@ -67,11 +66,11 @@ public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public FilterRegistrationBean<KeycloakAuthenticationFilter> keycloakAuthenticationFilter(AuthenticationService authenticationService) {
-        FilterRegistrationBean<KeycloakAuthenticationFilter> filterRegistration = new FilterRegistrationBean<>();
-        filterRegistration.setFilter(new KeycloakAuthenticationFilter(authenticationService));
-        filterRegistration.setOrder(102); // make sure the filter is registered after the Spring Security Filter Chain
-        filterRegistration.addUrlPatterns("/payments/*");
-        return filterRegistration;
+        FilterRegistrationBean<KeycloakAuthenticationFilter> bean = new FilterRegistrationBean<>();
+        bean.setFilter(new KeycloakAuthenticationFilter(authenticationService));
+        bean.setOrder(102); // make sure the filter is registered after the Spring Security Filter Chain
+        bean.addUrlPatterns("/payments/*");
+        return bean;
     }
 
     private String loadJwkSetUri() {
