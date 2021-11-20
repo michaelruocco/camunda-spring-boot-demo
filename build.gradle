@@ -75,11 +75,11 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
-    testImplementation "org.assertj:assertj-core:3.21.0" // latest version does not work with camunda asserts yet
-    testImplementation "net.javacrumbs.json-unit:json-unit-assertj:2.28.0" // cant use latest because of camunda asserts assertj clash
-    testImplementation "org.mockito:mockito-core:4.0.0"
+    testImplementation "org.assertj:assertj-core:3.21.0"
+    testImplementation "net.javacrumbs.json-unit:json-unit-assertj:2.28.0"
+    testImplementation "org.mockito:mockito-core:4.1.0"
     testImplementation "org.camunda.bpm.extension:camunda-bpm-junit5:1.0.2"
-    testImplementation "org.camunda.bpm.extension.mockito:camunda-bpm-mockito:5.15.0"
+    testImplementation "org.camunda.bpm.extension.mockito:camunda-bpm-mockito:5.16.0"
     testImplementation "org.camunda.bpm.assert:camunda-bpm-assert:13.0.0"
 
     integrationTestImplementation "uk.org.webcompere:system-stubs-jupiter:1.2.0"
