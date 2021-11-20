@@ -4,18 +4,20 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:15.0.2
     container_name: keycloak
+    hostname: "keycloak"
+    command: ["-Djboss.http.port=8081 -Djboss.https.port=8082"]
     ports:
-      - 8081:8080
-      - 8082:8443
+      - 8081:8081
+      - 8082:8082
     environment:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
-      #- KEYCLOAK_FRONTEND_URL=http://keycloak:8080/auth
+      - KEYCLOAK_FRONTEND_URL=http://keycloak:8081/auth
       - KEYCLOAK_IMPORT=/tmp/demo-local-realm.json
     volumes:
       - ./keycloak/demo-local-realm.json:/tmp/demo-local-realm.json
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/auth/realms/demo-local/.well-known/openid-configuration"]
+      test: ["CMD", "curl", "-f", "http://keycloak:8081/auth/realms/demo-local/.well-known/openid-configuration"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -28,8 +30,8 @@ services:
       - 8083:80
     environment:
       - SERVER_PORT=80
-      - AUTH_SERVER_HTTP=http://keycloak:8080
-      - AUTH_SERVER_HTTPS=https://keycloak:8443
+      - AUTH_SERVER_HTTP=http://keycloak:8081
+      - AUTH_SERVER_HTTPS=https://keycloak:8082
       - AUTH_REALM=demo-local
       - AUTH_CLIENT_ID=demo-client-id
       - AUTH_CLIENT_SECRET=demo-client-secret

@@ -1,14 +1,11 @@
 package uk.co.mruoc.demo.security.app;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,14 +14,12 @@ import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
-@NoArgsConstructor(force = true)
-@Component
 public class KeycloakLogoutHandler implements LogoutSuccessHandler {
 
     private final RedirectStrategy redirectStrategy;
     private final String logoutUri;
 
-    public KeycloakLogoutHandler(@Value("${spring.security.oauth2.client.provider.keycloak.authorization-uri}") String authUri) {
+    public KeycloakLogoutHandler(String authUri) {
         this(new DefaultRedirectStrategy(), toLogoutUri(authUri).orElse(null));
     }
 

@@ -37,6 +37,18 @@ To run the service locally:
 ./gradlew clean spotlessApply build integrationTest buildImage composeUp
 ```
 
+Once the service is running locally you can attempt to log in [here](http://localhost:8083). You
+can log in using either the admin credentials of username `demo-admin` with password `welcomeAdmin01`
+or the standard user credentials `demo-user` with password `welcome01`. However, you will find that the
+communication between the web application and keycloak to not work correctly unless you make a tweak
+to your local `/etc/hosts` file and enter the following line:
+
+```
+127.0.0.1   keycloak
+```
+
+Once this entry is added to your `/etc/hosts` is updated the login flow should work as expected.
+
 To run spin up service, run postman tests locally and spin service down again:
 
 ```bash

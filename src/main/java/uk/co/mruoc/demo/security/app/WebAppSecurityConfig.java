@@ -2,7 +2,6 @@ package uk.co.mruoc.demo.security.app;
 
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.webapp.impl.security.auth.ContainerBasedAuthenticationFilter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +18,6 @@ import org.springframework.web.filter.ForwardedHeaderFilter;
 import javax.inject.Inject;
 import java.util.Collections;
 
-@ConditionalOnMissingClass("org.springframework.test.context.junit.jupiter.SpringExtension")
 @Configuration
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 10)
 @Slf4j
