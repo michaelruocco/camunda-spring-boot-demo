@@ -2,7 +2,6 @@ package uk.co.mruoc.demo.security.app;
 
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.webapp.impl.security.auth.ContainerBasedAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -28,11 +27,6 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Inject
     private LogoutSuccessHandler logoutHandler;
-
-    @Bean
-    public LogoutSuccessHandler logoutSuccessHandler(@Value("${spring.security.oauth2.client.provider.keycloak.authorization-uri}") String authUri) {
-        return new KeycloakLogoutHandler(authUri);
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
