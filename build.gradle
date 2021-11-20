@@ -65,7 +65,7 @@ dependencies {
     runtimeOnly "com.h2database:h2:1.4.200"
     implementation "org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:${camundaVersion}"
     implementation "org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-rest:${camundaVersion}"
-    implementation "org.camunda.bpm.extension:camunda-bpm-identity-keycloak:2.2.2"
+    implementation "org.camunda.bpm.extension:camunda-bpm-identity-keycloak:2.2.3"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
