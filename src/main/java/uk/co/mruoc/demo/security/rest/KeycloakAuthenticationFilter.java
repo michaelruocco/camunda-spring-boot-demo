@@ -19,8 +19,9 @@ public class KeycloakAuthenticationFilter implements Filter {
     private final AuthenticationService authenticationService;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
+    public void doFilter(ServletRequest request,
+                         ServletResponse response,
+                         FilterChain chain) throws ServletException, IOException {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.setAuthentication(authentication);
