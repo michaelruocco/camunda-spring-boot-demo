@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClientBuilder;
-import uk.co.mruoc.demo.config.InvalidUriException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,13 +29,6 @@ public class S3Config {
         }
         log.info("configuring s3 region {} and credentials provider {}", region, credentialsProvider);
         return builder.region(Region.of(region)).credentialsProvider(credentialsProvider);
-    }
-
-    public Optional<URI> getEndpointOverride() {
-        if (StringUtils.isEmpty(endpointOverride)) {
-            return Optional.empty();
-        }
-        return Optional.of(toUri(endpointOverride));
     }
 
     private static URI toUri(String endpointOverride) {

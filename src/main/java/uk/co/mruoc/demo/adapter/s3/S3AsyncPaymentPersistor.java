@@ -11,7 +11,6 @@ import uk.co.mruoc.demo.domain.service.PaymentPersistor;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 
 @Builder
 @Slf4j
@@ -20,7 +19,6 @@ public class S3AsyncPaymentPersistor implements PaymentPersistor {
     private final S3PutObjectRequestFactory requestFactory;
     private final S3AsyncClient client;
     private final S3PersistenceResponseHandler responseHandler;
-    private final ExecutorService executor;
 
     @Override
     public void persist(Payment payment) {

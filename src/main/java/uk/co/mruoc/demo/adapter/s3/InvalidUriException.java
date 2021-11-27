@@ -1,4 +1,4 @@
-package uk.co.mruoc.demo.config;
+package uk.co.mruoc.demo.adapter.s3;
 
 public class InvalidUriException extends RuntimeException {
 
