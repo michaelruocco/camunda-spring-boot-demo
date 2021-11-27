@@ -1,5 +1,5 @@
 {
-  "_id": "{{randomValue length=13 type='ALPHANUMERIC_AND_SYMBOLS'}}",
+  "_id": "{{randomValue length=13 type='ALPHANUMERIC'}}",
   "tags": [
     "mock-quotes"
   ],
