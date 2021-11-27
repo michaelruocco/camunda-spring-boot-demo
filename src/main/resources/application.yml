@@ -53,4 +53,4 @@ plugin.identity.keycloak:
   administratorGroupName: ${auth.admin.group}
   disableSSLCertificateValidation: true
 
-logging.level.org.springframework.security: DEBUG
+logging.level.org.springframework.security: INFO

@@ -149,7 +149,7 @@ java {
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 
 task buildImage(type: DockerBuildImage) {
-    mustRunAfter(spotlessApply, assemble, test)
+    mustRunAfter(spotlessApply, assemble, test, integrationTest)
     inputDir.set(file("."))
     images.add("${imageName}:${version}")
     buildArgs = ["VERSION": version]

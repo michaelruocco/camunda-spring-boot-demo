@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/random"
+  },
+  "response": {
+    "bodyFileName" : "get-random-quote-response.json",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200
+  }
+}

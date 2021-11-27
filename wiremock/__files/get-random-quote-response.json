@@ -1,0 +1,12 @@
+{
+  "_id": "{{randomValue length=13 type='ALPHANUMERIC_AND_SYMBOLS'}}",
+  "tags": [
+    "mock-quotes"
+  ],
+  "content": "mock quote {{randomInt lower=1 upper=99}}",
+  "author": "Mock Quote Author",
+  "authorSlug": "mock-quote-author",
+  "length": 12,
+  "dateAdded": "2021-27-11",
+  "dateModified": "2021-27-11"
+}

@@ -1,7 +1,6 @@
 package uk.co.mruoc.demo.security.rest;
 
 import org.camunda.bpm.engine.IdentityService;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
@@ -24,7 +23,6 @@ import javax.inject.Inject;
 @Configuration
 @EnableWebSecurity
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 20)
-@ConditionalOnProperty(name = "rest.security.enabled", havingValue = "true", matchIfMissing = true)
 public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Inject

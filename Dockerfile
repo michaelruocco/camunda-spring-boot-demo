@@ -18,4 +18,5 @@ CMD java \
   -Dauth.client.id=${AUTH_CLIENT_ID} \
   -Dauth.client.secret=${AUTH_CLIENT_SECRET} \
   -Dauth.admin.group=${AUTH_ADMIN_GROUP} \
+  -Dquote.host=${QUOTE_HOST} \
   -jar /opt/app.jar

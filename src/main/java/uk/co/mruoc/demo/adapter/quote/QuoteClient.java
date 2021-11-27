@@ -8,14 +8,13 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class QuoteClient {
 
-    private static final String DEFAULT_HOST = "https://api.quotable.io";
     private static final String URL_TEMPLATE = "%s/random";
 
     private final String host;
     private final RestTemplate template;
 
-    public QuoteClient() {
-        this(DEFAULT_HOST, new RestTemplate());
+    public QuoteClient(String host) {
+        this(host, new RestTemplate());
     }
 
     public String loadRandomQuote() {

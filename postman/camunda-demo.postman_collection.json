@@ -6,6 +6,47 @@
 	},
 	"item": [
 		{
+			"name": "wiremock",
+			"item": [
+				{
+					"name": "random-quote",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json()",
+									"",
+									"pm.test(\"should return ok status\", function () {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"should return expected quote content\", function () {",
+									"    pm.expect(json.content).to.contain(\"mock quote\");",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{wiremock-host}}/random",
+							"host": [
+								"{{wiremock-host}}"
+							],
+							"path": [
+								"random"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "authorization",
 			"item": [
 				{

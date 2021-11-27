@@ -1,6 +1,7 @@
 package uk.co.mruoc.demo.config;
 
 import org.camunda.bpm.engine.RuntimeService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import uk.co.mruoc.demo.adapter.camunda.AcceptPayment;
@@ -27,8 +28,8 @@ import uk.co.mruoc.demo.domain.service.UpdateApproval;
 public class ApplicationConfig {
 
     @Bean
-    public QuoteClient quoteClient() {
-        return new QuoteClient();
+    public QuoteClient quoteClient(@Value("${quote.host:https://api.quotable.io}") String host) {
+        return new QuoteClient(host);
     }
 
     @Bean
