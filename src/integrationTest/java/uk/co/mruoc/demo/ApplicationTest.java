@@ -15,6 +15,9 @@ class ApplicationTest {
     @Container
     public static final LocalKeycloak KEYCLOAK = new LocalKeycloak();
 
+    @Container
+    public static final LocalAwsServices AWS_SERVICES = new LocalAwsServices();
+
     @Test
     void applicationShouldStart() {
         assertThatCode(this::startApplication).doesNotThrowAnyException();
@@ -32,7 +35,12 @@ class ApplicationTest {
                 .set("auth.realm", "demo-local")
                 .set("auth.client.id", "demo-client-id")
                 .set("auth.client.secret", "demo-client-secret")
-                .set("auth.admin.group", "camunda-admin");
+                .set("auth.admin.group", "camunda-admin")
+                .set("aws.accessKeyId", AWS_SERVICES.getAccessKeyId())
+                .set("aws.secretAccessKey", AWS_SERVICES.getSecretAccessKey())
+                .set("aws.region", AWS_SERVICES.getRegion())
+                //.set("aws.s3.endpoint.override", AWS_SERVICES.getEndpointUri())
+                .set("aws.s3.payment.bucket.name", "demo-payment");
     }
 
 }

@@ -13,10 +13,16 @@ import static org.mockito.Mockito.when;
 class PaymentCreatorTest {
 
     private final PreparePayment preparePayment = mock(PreparePayment.class);
+    private final PaymentPersistor persistor = mock(PaymentPersistor.class);
     private final PaymentRepository repository = mock(PaymentRepository.class);
     private final RequestApproval requestApproval = mock(RequestApproval.class);
 
-    private final PaymentCreator creator = new PaymentCreator(preparePayment, repository, requestApproval);
+    private final PaymentCreator creator = PaymentCreator.builder()
+            .persistor(persistor)
+            .preparePayment(preparePayment)
+            .repository(repository)
+            .requestApproval(requestApproval)
+            .build();
 
     @Test
     void shouldPreparePaymentBeforeSaving() {
@@ -30,14 +36,15 @@ class PaymentCreatorTest {
     }
 
     @Test
-    void shouldRequestApprovalAfterSaving() {
+    void shouldPersistPaymentAndRequestApprovalAfterSaving() {
         Payment payment = PaymentMother.build();
         Payment preparedPayment = mock(Payment.class);
         when(preparePayment.prepare(payment)).thenReturn(preparedPayment);
 
         creator.create(payment);
 
-        InOrder inOrder = inOrder(repository, requestApproval);
+        InOrder inOrder = inOrder(persistor, repository, requestApproval);
+        inOrder.verify(persistor).persist(preparedPayment);
         inOrder.verify(repository).save(preparedPayment);
         inOrder.verify(requestApproval).request(preparedPayment);
     }

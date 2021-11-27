@@ -12,7 +12,6 @@ public class PaymentProcessor {
     private final PaymentCreator creator;
     private final PaymentUpdater updater;
 
-
     public void process(Payment payment) {
         Optional<Payment> existing = repository.read(payment.getId());
         if (existing.isEmpty()) {

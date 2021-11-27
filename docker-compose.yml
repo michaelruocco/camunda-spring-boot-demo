@@ -1,15 +1,6 @@
 version: '3'
 services:
 
-  wiremock:
-    image: wiremock/wiremock:2.31.0-alpine
-    container_name: wiremock
-    command: ["--global-response-templating"]
-    ports:
-      - 8093:8080
-    volumes:
-      - ./wiremock:/home/wiremock
-
   keycloak:
     image: quay.io/keycloak/keycloak:15.0.2
     container_name: keycloak
@@ -31,6 +22,26 @@ services:
       timeout: 10s
       retries: 5
 
+  wiremock:
+    image: wiremock/wiremock:2.31.0-alpine
+    container_name: wiremock
+    command: ["--global-response-templating"]
+    ports:
+      - 8093:8080
+    volumes:
+      - ./wiremock:/home/wiremock
+
+  aws-services:
+    image: localstack/localstack:latest
+    container_name: aws-services
+    volumes:
+      - ./localstack:/docker-entrypoint-initaws.d
+    environment:
+      - AWS_ACCESS_KEY_ID=abc
+      - AWS_SECRET_ACCESS_KEY=123
+      - DEFAULT_REGION=eu-west-2
+      - SERVICES=s3
+
   demo-app:
     image: michaelruocco/camunda-spring-boot-demo:${APP_VERSION}
     container_name: demo-app
@@ -46,6 +57,11 @@ services:
       - AUTH_CLIENT_SECRET=demo-client-secret
       - AUTH_ADMIN_GROUP=camunda-admin
       - QUOTE_HOST=http://wiremock:8080
+      - AWS_ACCESS_KEY_ID=abc
+      - AWS_SECRET_ACCESS_KEY=123
+      - AWS_REGION=eu-west-2
+      - AWS_S3_PAYMENT_BUCKET_NAME=demo-payment
+      - AWS_S3_ENDPOINT_OVERRIDE=http://aws-services:4566
     depends_on:
       - wiremock
       - keycloak

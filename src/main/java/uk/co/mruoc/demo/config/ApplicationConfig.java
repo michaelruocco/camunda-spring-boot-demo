@@ -1,5 +1,6 @@
 package uk.co.mruoc.demo.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import uk.co.mruoc.demo.adapter.quote.QuoteClient;
 import uk.co.mruoc.demo.adapter.repository.InMemoryPaymentRepository;
 import uk.co.mruoc.demo.domain.service.PaymentCreator;
 import uk.co.mruoc.demo.domain.service.PaymentLoader;
+import uk.co.mruoc.demo.domain.service.PaymentPersistor;
 import uk.co.mruoc.demo.domain.service.PaymentProcessor;
 import uk.co.mruoc.demo.domain.service.PaymentRepository;
 import uk.co.mruoc.demo.domain.service.PaymentService;
@@ -25,10 +27,12 @@ import uk.co.mruoc.demo.domain.service.RequestApproval;
 import uk.co.mruoc.demo.domain.service.UpdateApproval;
 
 @Configuration
+@Slf4j
 public class ApplicationConfig {
 
     @Bean
     public QuoteClient quoteClient(@Value("${quote.host:https://api.quotable.io}") String host) {
+        log.info("configuring quote client with host {}", host);
         return new QuoteClient(host);
     }
 
@@ -64,9 +68,15 @@ public class ApplicationConfig {
 
     @Bean
     public PaymentCreator paymentCreator(PreparePayment preparePayment,
+                                         PaymentPersistor persistor,
                                          PaymentRepository repository,
                                          RequestApproval requestApproval) {
-        return new PaymentCreator(preparePayment, repository, requestApproval);
+        return PaymentCreator.builder()
+                .preparePayment(preparePayment)
+                .persistor(persistor)
+                .repository(repository)
+                .requestApproval(requestApproval)
+                .build();
     }
 
     @Bean
