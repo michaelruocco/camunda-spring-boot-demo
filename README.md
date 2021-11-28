@@ -40,7 +40,7 @@ or the standard user credentials `demo-user` with password `welcome01`. However,
 communication between the web application and keycloak to not work correctly unless you make a tweak
 to your local `/etc/hosts` file and enter the following line:
 
-```
+```bash
 127.0.0.1   keycloak
 ```
 

@@ -14,12 +14,12 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
-public class S3ObjectGetter {
+public class S3PaymentGetter {
 
     private final S3Config config;
     private final S3Client client;
 
-    public S3ObjectGetter(S3Config config) {
+    public S3PaymentGetter(S3Config config) {
         this(config, config.toClient());
     }
 

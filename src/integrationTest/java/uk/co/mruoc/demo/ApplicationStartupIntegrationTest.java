@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static uk.org.webcompere.systemstubs.resource.Resources.with;
 
 @Testcontainers
-class ApplicationTest {
+class ApplicationStartupIntegrationTest {
 
     @Container
     public static final LocalKeycloak KEYCLOAK = new LocalKeycloak();
@@ -39,7 +39,7 @@ class ApplicationTest {
                 .set("aws.accessKeyId", AWS_SERVICES.getAccessKeyId())
                 .set("aws.secretAccessKey", AWS_SERVICES.getSecretAccessKey())
                 .set("aws.region", AWS_SERVICES.getRegion())
-                //.set("aws.s3.endpoint.override", AWS_SERVICES.getEndpointUri())
+                .set("aws.s3.endpoint.override", AWS_SERVICES.getEndpointUri())
                 .set("aws.s3.payment.bucket.name", "demo-payment");
     }
 

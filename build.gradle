@@ -24,8 +24,9 @@ group "com.github.michaelruocco"
 ext {
     lombokVersion = "1.18.22"
     camundaVersion = "7.16.0"
+    awsSdkVersion = "2.17.90"
 
-    junitVersion = "5.8.1"
+    junitVersion = "5.8.2"
     keycloakVersion = "15.0.2"
     mockitoVersion = "4.1.0"
 
@@ -72,7 +73,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.camunda.bpm:camunda-engine-plugin-spin:${camundaVersion}"
     implementation "org.camunda.spin:camunda-spin-dataformat-all:1.12.0"
-    implementation "software.amazon.awssdk:s3:2.17.90"
+    implementation "software.amazon.awssdk:s3:${awsSdkVersion}"
     implementation "io.projectreactor:reactor-core:3.4.12"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
@@ -95,6 +96,8 @@ dependencies {
     testFixturesImplementation "com.github.michaelruocco:file-loader:6.0.1"
     testFixturesImplementation "org.camunda.bpm:camunda-engine:${camundaVersion}"
     testFixturesImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testFixturesImplementation "software.amazon.awssdk:s3:${awsSdkVersion}"
+    testFixturesImplementation "org.awaitility:awaitility:4.1.1"
 }
 
 javadoc.options.addStringOption('Xdoclint:none', '-quiet')
