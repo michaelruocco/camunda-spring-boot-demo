@@ -7,12 +7,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class InvalidUriExceptionTest {
 
     @Test
-    void shouldReturnMessage() {
-        String uri = "invalid-uri";
+    void shouldReturnCause() {
+        Throwable cause = new Exception();
 
-        Throwable error = new InvalidUriException(uri);
+        Throwable error = new InvalidUriException(cause);
 
-        assertThat(error.getMessage()).isEqualTo("invalid endpoint override value %s", uri);
+        assertThat(error.getCause()).isEqualTo(cause);
     }
 
 }

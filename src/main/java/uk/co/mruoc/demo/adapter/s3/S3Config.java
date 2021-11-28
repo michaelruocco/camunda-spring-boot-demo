@@ -10,7 +10,6 @@ import software.amazon.awssdk.services.s3.S3AsyncClientBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Optional;
 
 @Builder
 @Data
@@ -23,10 +22,15 @@ public class S3Config {
     private final AwsCredentialsProvider credentialsProvider;
 
     public S3AsyncClientBuilder configure(S3AsyncClientBuilder builder) {
+        S3AsyncClientBuilder configured = configureRegionAndCredentialsProvider(builder);
         if (StringUtils.isNotEmpty(endpointOverride)) {
             log.info("configuring overridden s3 endpoint with {}", endpointOverride);
-            builder.endpointOverride(toUri(endpointOverride));
+            return configured.endpointOverride(toUri(endpointOverride));
         }
+        return configured;
+    }
+
+    private S3AsyncClientBuilder configureRegionAndCredentialsProvider(S3AsyncClientBuilder builder) {
         log.info("configuring s3 region {} and credentials provider {}", region, credentialsProvider);
         return builder.region(Region.of(region)).credentialsProvider(credentialsProvider);
     }
@@ -35,7 +39,7 @@ public class S3Config {
         try {
             return new URI(endpointOverride);
         } catch (URISyntaxException e) {
-            throw new InvalidUriException(endpointOverride);
+            throw new InvalidUriException(e);
         }
     }
 
