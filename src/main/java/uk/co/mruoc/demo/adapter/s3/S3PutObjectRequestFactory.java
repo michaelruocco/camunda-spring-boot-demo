@@ -1,12 +1,11 @@
 package uk.co.mruoc.demo.adapter.s3;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import uk.co.mruoc.demo.domain.entity.Payment;
+import uk.co.mruoc.json.JsonConverter;
 
 import java.nio.charset.StandardCharsets;
 
@@ -17,30 +16,18 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class S3PutObjectRequestFactory {
 
     private final PutObjectRequest.Builder builder;
-    private final ObjectMapper mapper;
+    private final JsonConverter converter;
 
-    public S3PutObjectRequestFactory(String bucketName) {
-        this(bucketName, new ObjectMapper());
-    }
-
-    public S3PutObjectRequestFactory(String bucketName, ObjectMapper mapper) {
-        this(toRequestBuilder(bucketName), mapper);
+    public S3PutObjectRequestFactory(String bucketName, JsonConverter converter) {
+        this(toRequestBuilder(bucketName), converter);
     }
 
     public S3PutObjectRequestAdapter build(Payment payment) {
-        String json = toJson(payment);
+        String json = converter.toJson(payment);
         return S3PutObjectRequestAdapter.builder()
                 .request(toRequest(json, payment.getId()))
                 .body(toBody(json))
                 .build();
-    }
-
-    private String toJson(Payment payment) {
-        try {
-            return mapper.writeValueAsString(payment);
-        } catch (JsonProcessingException e) {
-            throw new S3PersistenceException(e);
-        }
     }
 
     private PutObjectRequest toRequest(String json, String id) {

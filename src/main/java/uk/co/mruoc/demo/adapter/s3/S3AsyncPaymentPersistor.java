@@ -7,6 +7,7 @@ import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import uk.co.mruoc.demo.domain.entity.Payment;
 import uk.co.mruoc.demo.domain.service.PaymentPersistor;
+import uk.co.mruoc.json.JsonConverter;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -20,8 +21,12 @@ public class S3AsyncPaymentPersistor implements PaymentPersistor {
     private final S3AsyncClient client;
     private final S3PersistenceResponseHandler responseHandler;
 
-    public S3AsyncPaymentPersistor(S3Config config) {
-        this(toRequestFactory(config), config.toAsyncClient(), new S3PersistenceResponseHandler());
+    public S3AsyncPaymentPersistor(JsonConverter jsonConverter, S3Config config) {
+        this(toRequestFactory(config, jsonConverter), config);
+    }
+
+    public S3AsyncPaymentPersistor(S3PutObjectRequestFactory requestFactory, S3Config config) {
+        this(requestFactory, config.toAsyncClient(), new S3PersistenceResponseHandler());
     }
 
     @Override
@@ -41,8 +46,8 @@ public class S3AsyncPaymentPersistor implements PaymentPersistor {
         Mono.fromFuture(future).subscribe(responseHandler::handle, responseHandler::handle);
     }
 
-    private static S3PutObjectRequestFactory toRequestFactory(S3Config config) {
-        return new S3PutObjectRequestFactory(config.getPaymentBucketName());
+    private static S3PutObjectRequestFactory toRequestFactory(S3Config config, JsonConverter jsonConverter) {
+        return new S3PutObjectRequestFactory(config.getPaymentBucketName(), jsonConverter);
     }
 
 }

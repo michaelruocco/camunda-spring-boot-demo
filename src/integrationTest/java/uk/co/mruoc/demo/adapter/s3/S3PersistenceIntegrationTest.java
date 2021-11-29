@@ -1,6 +1,5 @@
 package uk.co.mruoc.demo.adapter.s3;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,8 @@ import uk.co.mruoc.demo.adapter.camunda.s3.S3PaymentGetterCallable;
 import uk.co.mruoc.demo.domain.entity.Payment;
 import uk.co.mruoc.demo.domain.entity.PaymentMother;
 import uk.co.mruoc.demo.domain.service.PaymentPersistor;
+import uk.co.mruoc.json.JsonConverter;
+import uk.co.mruoc.json.jackson.JacksonJsonConverter;
 import uk.org.webcompere.systemstubs.properties.SystemProperties;
 
 import java.time.Duration;
@@ -27,7 +28,7 @@ class S3PersistenceIntegrationTest {
     @Container
     public static final LocalAwsServices AWS_SERVICES = new LocalAwsServices();
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final JsonConverter CONVERTER = new JacksonJsonConverter(new ObjectMapper());
 
     @BeforeEach
     void setUp() throws Exception {
@@ -46,9 +47,9 @@ class S3PersistenceIntegrationTest {
                 .until(bucketExists);
     }
 
-    private void runS3UploadTest() throws JsonProcessingException {
+    private void runS3UploadTest() {
         S3Config config = buildConfig();
-        PaymentPersistor persistor = new S3AsyncPaymentPersistor(config);
+        PaymentPersistor persistor = new S3AsyncPaymentPersistor(CONVERTER, config);
         Payment payment = PaymentMother.build();
 
         persistor.persist(payment);
@@ -57,7 +58,7 @@ class S3PersistenceIntegrationTest {
         Awaitility.await().atMost(Duration.ofSeconds(10))
                 .pollInterval(Duration.ofSeconds(1))
                 .until(paymentFound);
-        assertThatJson(paymentFound.getContent()).isEqualTo(MAPPER.writeValueAsString(payment));
+        assertThatJson(paymentFound.getContent()).isEqualTo(CONVERTER.toJson(payment));
     }
 
     private SystemProperties systemProperties() {
