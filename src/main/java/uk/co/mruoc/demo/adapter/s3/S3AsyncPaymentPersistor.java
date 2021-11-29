@@ -21,12 +21,12 @@ public class S3AsyncPaymentPersistor implements PaymentPersistor {
     private final S3AsyncClient client;
     private final S3PersistenceResponseHandler responseHandler;
 
-    public S3AsyncPaymentPersistor(JsonConverter jsonConverter, S3Config config) {
-        this(toRequestFactory(config, jsonConverter), config);
+    public S3AsyncPaymentPersistor(S3Config config, JsonConverter jsonConverter, S3AsyncClient client) {
+        this(toRequestFactory(config, jsonConverter), client);
     }
 
-    public S3AsyncPaymentPersistor(S3PutObjectRequestFactory requestFactory, S3Config config) {
-        this(requestFactory, config.toAsyncClient(), new S3PersistenceResponseHandler());
+    public S3AsyncPaymentPersistor(S3PutObjectRequestFactory requestFactory, S3AsyncClient client) {
+        this(requestFactory, client, new S3PersistenceResponseHandler());
     }
 
     @Override

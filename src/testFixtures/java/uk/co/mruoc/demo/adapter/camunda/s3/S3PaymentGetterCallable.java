@@ -1,6 +1,7 @@
 package uk.co.mruoc.demo.adapter.camunda.s3;
 
 import lombok.RequiredArgsConstructor;
+import software.amazon.awssdk.services.s3.S3Client;
 import uk.co.mruoc.demo.adapter.s3.S3Config;
 
 import java.util.Optional;
@@ -13,8 +14,8 @@ public class S3PaymentGetterCallable implements Callable<Boolean> {
     private final String paymentId;
     private String content;
 
-    public S3PaymentGetterCallable(S3Config config, String paymentId) {
-        this(new S3PaymentGetter(config), paymentId);
+    public S3PaymentGetterCallable(S3Config config, S3Client client, String paymentId) {
+        this(new S3PaymentGetter(config, client), paymentId);
     }
 
     @Override

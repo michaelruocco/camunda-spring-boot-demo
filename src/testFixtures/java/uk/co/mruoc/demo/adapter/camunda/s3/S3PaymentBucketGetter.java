@@ -14,10 +14,6 @@ public class S3PaymentBucketGetter {
     private final S3Config config;
     private final S3Client client;
 
-    public S3PaymentBucketGetter(S3Config config) {
-        this(config, config.toClient());
-    }
-
     public boolean paymentBucketExists() {
         try {
             String name = config.getPaymentBucketName();

@@ -19,10 +19,6 @@ public class S3PaymentGetter {
     private final S3Config config;
     private final S3Client client;
 
-    public S3PaymentGetter(S3Config config) {
-        this(config, config.toClient());
-    }
-
     public Optional<String> getPaymentContent(String id) {
         try {
             String key = toKey(id);

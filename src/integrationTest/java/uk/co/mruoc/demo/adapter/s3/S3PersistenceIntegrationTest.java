@@ -41,7 +41,9 @@ class S3PersistenceIntegrationTest {
     }
 
     private void waitForBucket() {
-        S3PaymentBucketCallable bucketExists = new S3PaymentBucketCallable(buildConfig());
+        S3Config config = buildConfig();
+        S3ClientFactory clientFactory = new S3ClientFactory(config);
+        S3PaymentBucketCallable bucketExists = new S3PaymentBucketCallable(config, clientFactory.buildClient());
         Awaitility.await().atMost(Duration.ofSeconds(30))
                 .pollInterval(Duration.ofSeconds(1))
                 .until(bucketExists);
@@ -49,12 +51,13 @@ class S3PersistenceIntegrationTest {
 
     private void runS3UploadTest() {
         S3Config config = buildConfig();
-        PaymentPersistor persistor = new S3AsyncPaymentPersistor(CONVERTER, config);
+        S3ClientFactory clientFactory = new S3ClientFactory(config);
+        PaymentPersistor persistor = new S3AsyncPaymentPersistor(config, CONVERTER, clientFactory.buildAsyncClient());
         Payment payment = PaymentMother.build();
 
         persistor.persist(payment);
 
-        S3PaymentGetterCallable paymentFound = new S3PaymentGetterCallable(config, payment.getId());
+        S3PaymentGetterCallable paymentFound = new S3PaymentGetterCallable(config, clientFactory.buildClient(), payment.getId());
         Awaitility.await().atMost(Duration.ofSeconds(10))
                 .pollInterval(Duration.ofSeconds(1))
                 .until(paymentFound);

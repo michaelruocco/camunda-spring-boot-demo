@@ -1,96 +1,41 @@
 package uk.co.mruoc.demo.adapter.s3;
 
 import org.junit.jupiter.api.Test;
-import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.s3.S3AsyncClientBuilder;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class S3ConfigTest {
 
-    private static final String VALID_REGION = "eu-west-1";
-
-    private final AwsCredentialsProvider credentialsProvider = mock(AwsCredentialsProvider.class);
-    private final S3AsyncClientBuilder clientBuilder = mock(S3AsyncClientBuilder.class);
-
-    private final S3Config.S3ConfigBuilder configBuilder = S3Config.builder()
-            .region(VALID_REGION)
-            .credentialsProvider(credentialsProvider);
+    private final S3Config.S3ConfigBuilder configBuilder = S3Config.builder();
 
     @Test
-    void shouldConfigureRegionAndCredentialsProviderIfEndpointOverrideNotSet() {
-        S3AsyncClientBuilder builderWithRegion = givenConfiguredWithRegion(clientBuilder, VALID_REGION);
-        S3AsyncClientBuilder builderWithCredentials = givenConfiguredWithCredentials(builderWithRegion);
-        S3Config config = configBuilder.build();
+    void shouldReturnEmptyEndpointOverrideWithValueIsNull() {
+        S3Config config = configBuilder.endpointOverride(null).build();
 
-        S3AsyncClientBuilder configuredClientBuilder = config.configure(clientBuilder);
+        Optional<String> endpointOverride = config.getEndpointOverride();
 
-        assertThat(configuredClientBuilder).isEqualTo(builderWithCredentials);
+        assertThat(endpointOverride).isEmpty();
     }
 
     @Test
-    void shouldConfigureRegionAndCredentialsAndEndpointOverride() throws URISyntaxException {
-        URI endpointOverride = new URI("http://localhost:1234");
-        S3AsyncClientBuilder builderWithRegion = givenConfiguredWithRegion(clientBuilder, VALID_REGION);
-        S3AsyncClientBuilder builderWithCredentials = givenConfiguredWithCredentials(builderWithRegion);
-        S3AsyncClientBuilder builderWithEndpointOverride = givenConfiguredWithEndpointOverride(builderWithCredentials, endpointOverride);
+    void shouldReturnEmptyEndpointOverrideWithValueIsEmpty() {
+        S3Config config = configBuilder.endpointOverride("").build();
 
-        S3Config config = configBuilder.endpointOverride(endpointOverride.toString()).build();
+        Optional<String> endpointOverride = config.getEndpointOverride();
 
-        S3AsyncClientBuilder configuredClientBuilder = config.configure(clientBuilder);
-
-        assertThat(configuredClientBuilder).isEqualTo(builderWithEndpointOverride);
+        assertThat(endpointOverride).isEmpty();
     }
 
     @Test
-    void shouldThrowExceptionIfRegionIsEmpty() {
-        S3Config config = configBuilder.region("").build();
+    void shouldReturnEmptyEndpointOverrideWithValueIsSet() {
+        String expectedEndpointOverride = "endpoint-override";
+        S3Config config = configBuilder.endpointOverride(expectedEndpointOverride).build();
 
-        Throwable error = catchThrowable(() -> config.configure(clientBuilder));
+        Optional<String> endpointOverride = config.getEndpointOverride();
 
-        assertThat(error)
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("region must not be blank or empty.");
-    }
-
-    @Test
-    void shouldThrowExceptionIfEndpointOverrideIsNotValidUri() {
-        String endpointOverride = ":invalid-uri";
-        S3AsyncClientBuilder builderWithRegion = givenConfiguredWithRegion(clientBuilder, VALID_REGION);
-        givenConfiguredWithCredentials(builderWithRegion);
-        S3Config config = configBuilder.endpointOverride(endpointOverride).build();
-
-        Throwable error = catchThrowable(() -> config.configure(clientBuilder));
-
-        assertThat(error)
-                .isInstanceOf(InvalidUriException.class)
-                .hasCauseInstanceOf(URISyntaxException.class)
-                .hasMessage("java.net.URISyntaxException: Expected scheme name at index 0: :invalid-uri");
-    }
-
-    private S3AsyncClientBuilder givenConfiguredWithEndpointOverride(S3AsyncClientBuilder builder, URI endpointOverride) {
-        S3AsyncClientBuilder builderWithOverride = mock(S3AsyncClientBuilder.class);
-        when(builder.endpointOverride(endpointOverride)).thenReturn(builderWithOverride);
-        return builderWithOverride;
-    }
-
-    private S3AsyncClientBuilder givenConfiguredWithRegion(S3AsyncClientBuilder builder, String region) {
-        S3AsyncClientBuilder builderWithRegion = mock(S3AsyncClientBuilder.class);
-        when(builder.region(Region.of(region))).thenReturn(builderWithRegion);
-        return builderWithRegion;
-    }
-
-    private S3AsyncClientBuilder givenConfiguredWithCredentials(S3AsyncClientBuilder builder) {
-        S3AsyncClientBuilder builderWithCredentials = mock(S3AsyncClientBuilder.class);
-        when(builder.credentialsProvider(credentialsProvider)).thenReturn(builderWithCredentials);
-        return builderWithCredentials;
+        assertThat(endpointOverride).contains(expectedEndpointOverride);
     }
 
 }
