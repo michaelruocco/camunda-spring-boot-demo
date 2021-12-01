@@ -2,7 +2,6 @@ package uk.co.mruoc.demo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.output.OutputFrame;
 
 import static org.testcontainers.utility.MountableFile.forHostPath;
 
@@ -23,7 +22,7 @@ public class LocalAwsServices extends GenericContainer<LocalAwsServices> {
         withEnv("SERVICES", "s3");
         withExposedPorts(PORT);
         withCopyFileToContainer(forHostPath("localstack/init-s3.sh"), "/docker-entrypoint-initaws.d/init-s3.sh");
-        withLogConsumer(this::logInfo);
+        withLogConsumer(new LogConsumer());
     }
 
     public String getEndpointUri() {
@@ -43,15 +42,5 @@ public class LocalAwsServices extends GenericContainer<LocalAwsServices> {
     public String getRegion() {
         return REGION;
     }
-
-    private void logInfo(OutputFrame frame) {
-        log.info(removeNewline(frame.getUtf8String()));
-    }
-
-    private static String removeNewline(String value) {
-        return value.replace("\n", "")
-                .replace("\r", "");
-    }
-
 
 }

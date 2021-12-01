@@ -18,9 +18,9 @@ services:
       - ./keycloak/demo-local-realm.json:/tmp/demo-local-realm.json
     healthcheck:
       test: ["CMD", "curl", "-f", "http://keycloak:8091/auth/realms/demo-local/.well-known/openid-configuration"]
-      interval: 30s
+      interval: 10s
       timeout: 10s
-      retries: 5
+      retries: 15
 
   wiremock:
     image: wiremock/wiremock:2.31.0-alpine
@@ -34,6 +34,8 @@ services:
   aws-services:
     image: localstack/localstack:latest
     container_name: aws-services
+    ports:
+      - 4566:4566
     volumes:
       - ./localstack:/docker-entrypoint-initaws.d
     environment:
@@ -56,12 +58,12 @@ services:
       - AUTH_CLIENT_ID=demo-client-id
       - AUTH_CLIENT_SECRET=demo-client-secret
       - AUTH_ADMIN_GROUP=camunda-admin
-      - QUOTE_HOST=http://wiremock:8080
       - AWS_ACCESS_KEY_ID=abc
       - AWS_SECRET_ACCESS_KEY=123
       - AWS_REGION=eu-west-2
       - AWS_S3_PAYMENT_BUCKET_NAME=demo-payment
       - AWS_S3_ENDPOINT_OVERRIDE=http://aws-services:4566
+      - QUOTE_HOST=http://wiremock:8080
     depends_on:
       - wiremock
       - keycloak

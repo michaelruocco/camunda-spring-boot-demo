@@ -1,0 +1,28 @@
+version: '3'
+services:
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:15.0.2
+    command: ["-Djboss.http.port=8091", "-Djboss.https.port=8092"]
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - KEYCLOAK_IMPORT=/tmp/demo-local-realm.json
+    volumes:
+      - ../../../keycloak/demo-local-realm.json:/tmp/demo-local-realm.json
+
+  wiremock:
+    image: wiremock/wiremock:2.31.0-alpine
+    command: ["--global-response-templating"]
+    volumes:
+      - ../../../wiremock:/home/wiremock
+
+  aws-services:
+    image: localstack/localstack:latest
+    volumes:
+      - ../../../localstack:/docker-entrypoint-initaws.d
+    environment:
+      - AWS_ACCESS_KEY_ID=abc
+      - AWS_SECRET_ACCESS_KEY=123
+      - DEFAULT_REGION=eu-west-2
+      - SERVICES=s3

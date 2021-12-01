@@ -2,7 +2,6 @@ package uk.co.mruoc.demo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.output.OutputFrame;
 
 import static org.testcontainers.utility.MountableFile.forHostPath;
 
@@ -19,7 +18,7 @@ public class LocalKeycloak extends GenericContainer<LocalKeycloak> {
         withEnv("KEYCLOAK_PASSWORD", "admin");
         withEnv("KEYCLOAK_IMPORT", "/tmp/demo-local-realm.json");
         withCopyFileToContainer(forHostPath("keycloak/demo-local-realm.json"), "/tmp/demo-local-realm.json");
-        withLogConsumer(this::logInfo);
+        withLogConsumer(new LogConsumer());
     }
 
     public String getHttpAuthUri() {
@@ -31,16 +30,7 @@ public class LocalKeycloak extends GenericContainer<LocalKeycloak> {
     public String getHttpsAuthUri() {
         String ip = getContainerIpAddress();
         int port = getMappedPort(HTTPS_PORT);
-        return String.format("httpS://%s:%d", ip, port);
-    }
-
-    private void logInfo(OutputFrame frame) {
-        log.info(removeNewline(frame.getUtf8String()));
-    }
-
-    private static String removeNewline(String value) {
-        return value.replace("\n", "")
-                .replace("\r", "");
+        return String.format("https://%s:%d", ip, port);
     }
 
 }
