@@ -1,4 +1,4 @@
-package uk.co.mruoc.demo.adapter.camunda;
+package uk.co.mruoc.demo.domain.service;
 
 public class ExternalNotificationFailedException extends RuntimeException {
 
