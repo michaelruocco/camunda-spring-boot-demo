@@ -774,7 +774,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "demo-client-secret",
       "redirectUris": [
-        "http://localhost:8083/camunda/*"
+        "http://localhost:8090/camunda/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
