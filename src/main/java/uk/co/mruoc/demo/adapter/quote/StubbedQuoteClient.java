@@ -1,4 +1,6 @@
-package uk.co.mruoc.demo.domain.service;
+package uk.co.mruoc.demo.adapter.quote;
+
+import uk.co.mruoc.demo.domain.service.QuoteClient;
 
 import java.util.UUID;
 

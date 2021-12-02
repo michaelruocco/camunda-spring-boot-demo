@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import uk.co.mruoc.demo.domain.service.LoggingPaymentPersistor;
+import uk.co.mruoc.demo.adapter.s3.LoggingPaymentPersistor;
 import uk.co.mruoc.demo.domain.service.PaymentPersistor;
 import uk.co.mruoc.demo.domain.service.QuoteClient;
-import uk.co.mruoc.demo.domain.service.StubbedQuoteClient;
+import uk.co.mruoc.demo.adapter.quote.StubbedQuoteClient;
 import uk.co.mruoc.json.JsonConverter;
 
 @Configuration

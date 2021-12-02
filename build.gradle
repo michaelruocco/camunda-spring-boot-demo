@@ -25,10 +25,11 @@ ext {
     lombokVersion = "1.18.22"
     camundaVersion = "7.16.0"
     awsSdkVersion = "2.17.90"
+    keycloakVersion = "15.0.2"
 
     junitVersion = "5.8.2"
-    keycloakVersion = "15.0.2"
     mockitoVersion = "4.1.0"
+    systemStubsVersion = "1.2.0"
 
     imageName = "michaelruocco/${project.name}"
 }
@@ -86,10 +87,11 @@ dependencies {
     testImplementation "org.camunda.bpm.extension:camunda-bpm-junit5:1.0.2"
     testImplementation "org.camunda.bpm.extension.mockito:camunda-bpm-mockito:5.16.0"
     testImplementation "org.camunda.bpm.assert:camunda-bpm-assert:13.0.0"
+    testImplementation "uk.org.webcompere:system-stubs-jupiter:${systemStubsVersion}"
 
     integrationTestCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     integrationTestAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    integrationTestImplementation "uk.org.webcompere:system-stubs-jupiter:1.2.0"
+    integrationTestImplementation "uk.org.webcompere:system-stubs-jupiter:${systemStubsVersion}"
     integrationTestImplementation "org.testcontainers:junit-jupiter:1.16.2"
 
     testFixturesCompileOnly "org.projectlombok:lombok:${lombokVersion}"
