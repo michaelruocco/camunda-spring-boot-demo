@@ -1,11 +1,13 @@
 package uk.co.mruoc.demo.security.rest;
 
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.IdentityService;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,6 +25,8 @@ import javax.inject.Inject;
 @Configuration
 @EnableWebSecurity
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 20)
+@Profile("secure")
+@Slf4j
 public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Inject

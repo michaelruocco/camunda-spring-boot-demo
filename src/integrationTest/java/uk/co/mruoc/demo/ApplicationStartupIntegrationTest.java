@@ -29,6 +29,7 @@ class ApplicationStartupIntegrationTest {
 
     private SystemProperties systemProperties() {
         return new SystemProperties()
+                .set("spring.profiles.active", "secure")
                 .set("server.port", "0")
                 .set("auth.server.http", KEYCLOAK.getHttpAuthUri())
                 .set("auth.server.https", KEYCLOAK.getHttpsAuthUri())
@@ -40,7 +41,9 @@ class ApplicationStartupIntegrationTest {
                 .set("aws.secretAccessKey", AWS_SERVICES.getSecretAccessKey())
                 .set("aws.region", AWS_SERVICES.getRegion())
                 .set("aws.s3.endpoint.override", AWS_SERVICES.getEndpointUri())
-                .set("aws.s3.payment.bucket.name", "demo-payment");
+                .set("aws.s3.payment.bucket.name", "demo-payment")
+                .set("camunda.bpm.generate-unique-process-engine-name", "true")
+                .set("camunda.bpm.generate-unique-process-application-name", "true");
     }
 
 }

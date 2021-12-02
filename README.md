@@ -28,7 +28,7 @@ This repo contains a simple demo application using [Camunda](https://camunda.com
 ./gradlew clean currentVersion dependencyUpdates spotlessApply build integrationTest
 ```
 
-To run the service locally:
+## Running locally with dependencies
 
 ```bash
 ./gradlew clean spotlessApply build integrationTest buildImage composeUp
@@ -46,7 +46,27 @@ to your local `/etc/hosts` file and enter the following line:
 
 Once this entry is added to your `/etc/hosts` is updated the login flow should work as expected.
 
-To run spin up service, run postman tests locally and spin service down again:
+## Running locally without dependencies
+
+Since it can take a while for the docker dependency containers (particularly keycloak) to start up,
+it is also possible to run the service locally with all external dependencies stubbed
+out from within the application.
+
+In this case instead of writing to S3 the json that would be written to S3 is just logged instead.
+
+There is no authentication provider, so to log into the admin console you should use the default admin
+user which is both user id: `demo` and password: `demo`.
+
+Instead of calling the quote API to retrieve a random quote, a stubbed quote is created which
+includes a random UUID for uniqueness.
+
+To do this you can run the following command:
+
+```bash
+./gradlew bootRun
+```
+
+## Running Postman integration tests with dependencies
 
 ```bash
 ./gradlew clean build buildImage composeUp postman composeDown

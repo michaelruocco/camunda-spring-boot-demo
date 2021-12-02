@@ -1,7 +1,7 @@
 package uk.co.mruoc.demo.domain.service;
 
 import org.junit.jupiter.api.Test;
-import uk.co.mruoc.demo.adapter.quote.QuoteClient;
+import uk.co.mruoc.demo.adapter.quote.RestQuoteClient;
 import uk.co.mruoc.demo.domain.entity.Payment;
 import uk.co.mruoc.demo.domain.entity.PaymentMother;
 import uk.co.mruoc.demo.domain.entity.Status;
@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 
 class PreparePaymentTest {
 
-    private final QuoteClient client = mock(QuoteClient.class);
+    private final RestQuoteClient client = mock(RestQuoteClient.class);
 
     private final PreparePayment preparePayment = new PreparePayment(client);
 

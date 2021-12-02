@@ -5,6 +5,7 @@ ARG VERSION
 COPY build/libs/camunda-spring-boot-demo-${VERSION}.jar /opt/app.jar
 
 CMD java \
+  -Dspring.profiles.active=secure \
   -Dserver.port=${SERVER_PORT} \
   -Dauth.server.http=${AUTH_SERVER_HTTP} \
   -Dauth.server.https=${AUTH_SERVER_HTTPS} \

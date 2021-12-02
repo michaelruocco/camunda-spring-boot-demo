@@ -1,0 +1,43 @@
+keycloak:
+  url.auth: ${auth.server.http}
+  url.token: ${auth.server.http}
+  url.plugin: ${auth.server.https}
+  client.id: ${auth.client.id}
+  client.secret: ${auth.client.secret}
+
+spring:
+  security.oauth2.client:
+    registration:
+      keycloak:
+        provider: keycloak
+        client-id: ${auth.client.id}
+        client-secret: ${auth.client.secret}
+        authorization-grant-type: authorization_code
+        redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+        scope: openid, profile, email
+    provider:
+      keycloak:
+        issuer-uri: ${auth.server.http}/auth/realms/${auth.realm}
+        openid-connect-uri: ${spring.security.oauth2.client.provider.keycloak.issuer-uri}/protocol/openid-connect
+        authorization-uri: ${spring.security.oauth2.client.provider.keycloak.openid-connect-uri}/auth
+        logout-uri: ${spring.security.oauth2.client.provider.keycloak.openid-connect-uri}/logout
+        user-info-uri: ${spring.security.oauth2.client.provider.keycloak.openid-connect-uri}/userinfo
+        token-uri: ${spring.security.oauth2.client.provider.keycloak.openid-connect-uri}/token
+        jwk-set-uri: ${spring.security.oauth2.client.provider.keycloak.openid-connect-uri}/certs
+        user-name-attribute: preferred_username
+
+rest.security:
+  enabled: true
+  provider: keycloak
+  required-audience: camunda-rest-api
+
+plugin.identity.keycloak:
+  keycloakIssuerUrl: ${spring.security.oauth2.client.provider.keycloak.issuer-uri}
+  keycloakAdminUrl: ${auth.server.http}/auth/admin/realms/${auth.realm}
+  clientId: ${auth.client.id}
+  clientSecret: ${auth.client.secret}
+  useEmailAsCamundaUserId: false
+  useUsernameAsCamundaUserId: true
+  useGroupPathAsCamundaGroupId: true
+  administratorGroupName: ${auth.admin.group}
+  disableSSLCertificateValidation: true
