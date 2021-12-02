@@ -91,7 +91,6 @@ dependencies {
     integrationTestAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     integrationTestImplementation "uk.org.webcompere:system-stubs-jupiter:1.2.0"
     integrationTestImplementation "org.testcontainers:junit-jupiter:1.16.2"
-    integrationTestImplementation "org.springframework:spring-test:5.3.13"
 
     testFixturesCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testFixturesAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"

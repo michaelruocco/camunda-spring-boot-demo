@@ -19,7 +19,6 @@ class ApplicationStartupIntegrationTest {
     public static final LocalAwsServices AWS_SERVICES = new LocalAwsServices();
 
     @Test
-    @DirtiesContext
     void applicationShouldStart() {
         assertThatCode(this::startApplication).doesNotThrowAnyException();
     }
@@ -42,7 +41,9 @@ class ApplicationStartupIntegrationTest {
                 .set("aws.secretAccessKey", AWS_SERVICES.getSecretAccessKey())
                 .set("aws.region", AWS_SERVICES.getRegion())
                 .set("aws.s3.endpoint.override", AWS_SERVICES.getEndpointUri())
-                .set("aws.s3.payment.bucket.name", "demo-payment");
+                .set("aws.s3.payment.bucket.name", "demo-payment")
+                .set("camunda.bpm.generate-unique-process-engine-name", "true")
+                .set("camunda.bpm.generate-unique-process-application-name", "true");
     }
 
 }
