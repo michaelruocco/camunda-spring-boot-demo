@@ -1,20 +1,24 @@
 package uk.co.mruoc.demo.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import uk.co.mruoc.demo.adapter.camunda.AcceptPayment;
+import org.springframework.context.annotation.Profile;
+import uk.co.mruoc.demo.adapter.camunda.AcceptPaymentDelegate;
 import uk.co.mruoc.demo.adapter.camunda.ApprovalFormFactory;
 import uk.co.mruoc.demo.adapter.camunda.CamundaRequestApproval;
 import uk.co.mruoc.demo.adapter.camunda.CamundaUpdateApproval;
 import uk.co.mruoc.demo.adapter.camunda.PaymentConverter;
-import uk.co.mruoc.demo.adapter.camunda.RejectPayment;
-import uk.co.mruoc.demo.adapter.camunda.SendExternalNotification;
+import uk.co.mruoc.demo.adapter.camunda.RejectPaymentDelegate;
+import uk.co.mruoc.demo.adapter.camunda.SendExternalNotificationDelegate;
 import uk.co.mruoc.demo.adapter.camunda.VariableExtractor;
-import uk.co.mruoc.demo.adapter.quote.QuoteClient;
+import uk.co.mruoc.demo.domain.service.QuoteClient;
+import uk.co.mruoc.demo.adapter.quote.RestQuoteClient;
 import uk.co.mruoc.demo.adapter.repository.InMemoryPaymentRepository;
+import uk.co.mruoc.demo.domain.service.AcceptPayment;
 import uk.co.mruoc.demo.domain.service.PaymentCreator;
 import uk.co.mruoc.demo.domain.service.PaymentLoader;
 import uk.co.mruoc.demo.domain.service.PaymentPersistor;
@@ -23,17 +27,22 @@ import uk.co.mruoc.demo.domain.service.PaymentRepository;
 import uk.co.mruoc.demo.domain.service.PaymentService;
 import uk.co.mruoc.demo.domain.service.PaymentUpdater;
 import uk.co.mruoc.demo.domain.service.PreparePayment;
+import uk.co.mruoc.demo.domain.service.RejectPayment;
 import uk.co.mruoc.demo.domain.service.RequestApproval;
+import uk.co.mruoc.demo.domain.service.SendExternalNotification;
 import uk.co.mruoc.demo.domain.service.UpdateApproval;
+import uk.co.mruoc.json.JsonConverter;
+import uk.co.mruoc.json.jackson.JacksonJsonConverter;
 
 @Configuration
 @Slf4j
 public class ApplicationConfig {
 
     @Bean
+    @Profile("!stubbed")
     public QuoteClient quoteClient(@Value("${quote.host:https://api.quotable.io}") String host) {
         log.info("configuring quote client with host {}", host);
-        return new QuoteClient(host);
+        return new RestQuoteClient(host);
     }
 
     @Bean
@@ -109,29 +118,39 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AcceptPayment acceptPayment(VariableExtractor extractor,
-                                       PaymentLoader loader,
-                                       PaymentRepository repository) {
-        return new AcceptPayment(extractor, loader, repository);
+    public AcceptPayment acceptPayment(PaymentLoader loader, PaymentRepository repository) {
+        return new AcceptPayment(loader, repository);
     }
 
     @Bean
-    public RejectPayment rejectPayment(VariableExtractor extractor,
-                                       PaymentLoader loader,
-                                       PaymentRepository repository) {
-        return new RejectPayment(extractor, loader, repository);
+    public AcceptPaymentDelegate acceptPaymentDelegate(VariableExtractor extractor, AcceptPayment acceptPayment) {
+        return new AcceptPaymentDelegate(extractor, acceptPayment);
     }
 
     @Bean
-    public SendExternalNotification sendExternalNotification(VariableExtractor extractor) {
-        return new SendExternalNotification(extractor);
+    public RejectPayment rejectPayment(PaymentLoader loader, PaymentRepository repository) {
+        return new RejectPayment(loader, repository);
     }
 
     @Bean
-    public RejectPayment repository(VariableExtractor extractor,
-                                    PaymentLoader loader,
-                                    PaymentRepository repository) {
-        return new RejectPayment(extractor, loader, repository);
+    public RejectPaymentDelegate rejectPaymentDelegate(VariableExtractor extractor, RejectPayment rejectPayment) {
+        return new RejectPaymentDelegate(extractor, rejectPayment);
+    }
+
+    @Bean
+    public SendExternalNotification sendExternalNotification() {
+        return new SendExternalNotification();
+    }
+
+    @Bean
+    public SendExternalNotificationDelegate sendExternalNotificationDelegate(VariableExtractor extractor,
+                                                                             SendExternalNotification sendNotification) {
+        return new SendExternalNotificationDelegate(extractor, sendNotification);
+    }
+
+    @Bean
+    public JsonConverter jsonConverter(ObjectMapper mapper) {
+        return new JacksonJsonConverter(mapper);
     }
 
 }

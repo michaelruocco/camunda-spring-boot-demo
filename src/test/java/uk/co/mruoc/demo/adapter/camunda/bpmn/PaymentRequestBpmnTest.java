@@ -45,7 +45,7 @@ class PaymentRequestBpmnTest {
     @MethodSource("autoDecisionProductCostAndRiskScore")
     void shouldMakeAutoDecisionBasedOnProductIdCostAndRiskScore(String productId, double cost, double riskScore, String delegateName, String[] activityIds) {
         registerJavaDelegateMock(delegateName);
-        registerJavaDelegateMock("sendExternalNotification");
+        registerJavaDelegateMock("sendExternalNotificationDelegate");
         Map<String, Object> variables = buildVariables(productId, cost, riskScore);
 
         ProcessInstance process = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables);
@@ -61,7 +61,7 @@ class PaymentRequestBpmnTest {
     @MethodSource("userApprovalProductCostAndRiskScore")
     void shouldRequireUserApprovalBasedOnItemNameValueAndRiskScore(String productId, double cost, double riskScore, boolean approved, String delegateName, String[] activityIds) {
         registerJavaDelegateMock(delegateName);
-        registerJavaDelegateMock("sendExternalNotification");
+        registerJavaDelegateMock("sendExternalNotificationDelegate");
         Map<String, Object> variables = buildVariables(productId, cost, riskScore);
 
         ProcessInstanceWithVariables process = runtimeService.createProcessInstanceByKey(PROCESS_DEFINITION_KEY)
@@ -81,17 +81,17 @@ class PaymentRequestBpmnTest {
 
     private static Stream<Arguments> autoDecisionProductCostAndRiskScore() {
         return Stream.of(
-                Arguments.of("any-item", 999.99, 150, "acceptPayment", acceptPaymentIds()),
-                Arguments.of("any-item", 1000, 150, "rejectPayment", rejectPaymentIds()),
-                Arguments.of("abc-123", 1000, 150, "acceptPayment", acceptPaymentIds()),
-                Arguments.of("xyz-789", 1000, 150, "acceptPayment", acceptPaymentIds())
+                Arguments.of("any-item", 999.99, 150, "acceptPaymentDelegate", acceptPaymentIds()),
+                Arguments.of("any-item", 1000, 150, "rejectPaymentDelegate", rejectPaymentIds()),
+                Arguments.of("abc-123", 1000, 150, "acceptPaymentDelegate", acceptPaymentIds()),
+                Arguments.of("xyz-789", 1000, 150, "acceptPaymentDelegate", acceptPaymentIds())
         );
     }
 
     private static Stream<Arguments> userApprovalProductCostAndRiskScore() {
         return Stream.of(
-                Arguments.of("any-item", 1000, 0, true, "acceptPayment", acceptPaymentIds()),
-                Arguments.of("any-item", 1000, 149.99, false, "rejectPayment", rejectPaymentIds())
+                Arguments.of("any-item", 1000, 0, true, "acceptPaymentDelegate", acceptPaymentIds()),
+                Arguments.of("any-item", 1000, 149.99, false, "rejectPaymentDelegate", rejectPaymentIds())
         );
     }
 
