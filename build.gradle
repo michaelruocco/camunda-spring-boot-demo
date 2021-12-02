@@ -91,6 +91,7 @@ dependencies {
     integrationTestAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     integrationTestImplementation "uk.org.webcompere:system-stubs-jupiter:1.2.0"
     integrationTestImplementation "org.testcontainers:junit-jupiter:1.16.2"
+    integrationTestImplementation "org.springframework:spring-test:5.3.13"
 
     testFixturesCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testFixturesAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -105,13 +106,9 @@ javadoc.options.addStringOption('Xdoclint:none', '-quiet')
 
 bootRun {
     jvmArgs = [
-            "-Dserver.port=8083",
-            "-Dauth.server.http=http://localhost:8081",
-            "-Dauth.server.https=https://localhost:8082",
-            "-Dauth.realm=demo-local",
-            "-Dauth.client.id=demo-client-id",
-            "-Dauth.client.secret=demo-client-secret",
-            "-Dauth.admin.group=camunda-admin"
+            "-Dserver.port=8090",
+            "-Dspring.profiles.active=stubbed",
+            "-Dspring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration"
     ]
 }
 

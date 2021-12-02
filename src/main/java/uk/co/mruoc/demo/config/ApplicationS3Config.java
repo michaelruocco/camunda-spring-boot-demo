@@ -1,10 +1,10 @@
 package uk.co.mruoc.demo.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import software.amazon.awssdk.auth.credentials.SystemPropertyCredentialsProvider;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.S3AsyncClientBuilder;
@@ -14,10 +14,10 @@ import uk.co.mruoc.demo.adapter.s3.S3Config;
 import uk.co.mruoc.demo.adapter.s3.S3PutObjectRequestFactory;
 import uk.co.mruoc.demo.domain.service.PaymentPersistor;
 import uk.co.mruoc.json.JsonConverter;
-import uk.co.mruoc.json.jackson.JacksonJsonConverter;
 
 @Configuration
 @Slf4j
+@Profile("!stubbed")
 public class ApplicationS3Config {
 
     @Bean
@@ -30,11 +30,6 @@ public class ApplicationS3Config {
                 .paymentBucketName(paymentBucketName)
                 .credentialsProvider(SystemPropertyCredentialsProvider.create())
                 .build();
-    }
-
-    @Bean
-    public JsonConverter jsonConverter(ObjectMapper mapper) {
-        return new JacksonJsonConverter(mapper);
     }
 
     @Bean

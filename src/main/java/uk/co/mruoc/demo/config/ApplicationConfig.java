@@ -1,10 +1,12 @@
 package uk.co.mruoc.demo.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import uk.co.mruoc.demo.adapter.camunda.AcceptPaymentDelegate;
 import uk.co.mruoc.demo.adapter.camunda.ApprovalFormFactory;
 import uk.co.mruoc.demo.adapter.camunda.CamundaRequestApproval;
@@ -13,7 +15,8 @@ import uk.co.mruoc.demo.adapter.camunda.PaymentConverter;
 import uk.co.mruoc.demo.adapter.camunda.RejectPaymentDelegate;
 import uk.co.mruoc.demo.adapter.camunda.SendExternalNotificationDelegate;
 import uk.co.mruoc.demo.adapter.camunda.VariableExtractor;
-import uk.co.mruoc.demo.adapter.quote.QuoteClient;
+import uk.co.mruoc.demo.domain.service.QuoteClient;
+import uk.co.mruoc.demo.adapter.quote.RestQuoteClient;
 import uk.co.mruoc.demo.adapter.repository.InMemoryPaymentRepository;
 import uk.co.mruoc.demo.domain.service.AcceptPayment;
 import uk.co.mruoc.demo.domain.service.PaymentCreator;
@@ -28,15 +31,18 @@ import uk.co.mruoc.demo.domain.service.RejectPayment;
 import uk.co.mruoc.demo.domain.service.RequestApproval;
 import uk.co.mruoc.demo.domain.service.SendExternalNotification;
 import uk.co.mruoc.demo.domain.service.UpdateApproval;
+import uk.co.mruoc.json.JsonConverter;
+import uk.co.mruoc.json.jackson.JacksonJsonConverter;
 
 @Configuration
 @Slf4j
 public class ApplicationConfig {
 
     @Bean
+    @Profile("!stubbed")
     public QuoteClient quoteClient(@Value("${quote.host:https://api.quotable.io}") String host) {
         log.info("configuring quote client with host {}", host);
-        return new QuoteClient(host);
+        return new RestQuoteClient(host);
     }
 
     @Bean
@@ -140,6 +146,11 @@ public class ApplicationConfig {
     public SendExternalNotificationDelegate sendExternalNotificationDelegate(VariableExtractor extractor,
                                                                              SendExternalNotification sendNotification) {
         return new SendExternalNotificationDelegate(extractor, sendNotification);
+    }
+
+    @Bean
+    public JsonConverter jsonConverter(ObjectMapper mapper) {
+        return new JacksonJsonConverter(mapper);
     }
 
 }

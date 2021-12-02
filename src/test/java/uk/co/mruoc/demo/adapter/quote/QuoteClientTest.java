@@ -14,7 +14,7 @@ class QuoteClientTest {
 
     private final RestTemplate restTemplate = mock(RestTemplate.class);
 
-    private final QuoteClient client = new QuoteClient(HOST, restTemplate);
+    private final RestQuoteClient client = new RestQuoteClient(HOST, restTemplate);
 
     @Test
     void shouldThrowExceptionIfNoResponse() {

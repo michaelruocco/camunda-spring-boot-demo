@@ -19,6 +19,7 @@ class ApplicationStartupIntegrationTest {
     public static final LocalAwsServices AWS_SERVICES = new LocalAwsServices();
 
     @Test
+    @DirtiesContext
     void applicationShouldStart() {
         assertThatCode(this::startApplication).doesNotThrowAnyException();
     }
@@ -29,6 +30,7 @@ class ApplicationStartupIntegrationTest {
 
     private SystemProperties systemProperties() {
         return new SystemProperties()
+                .set("spring.profiles.active", "secure")
                 .set("server.port", "0")
                 .set("auth.server.http", KEYCLOAK.getHttpAuthUri())
                 .set("auth.server.https", KEYCLOAK.getHttpsAuthUri())
