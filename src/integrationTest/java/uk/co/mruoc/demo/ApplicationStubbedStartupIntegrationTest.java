@@ -23,7 +23,6 @@ class ApplicationStubbedStartupIntegrationTest {
         return new SystemProperties()
                 .set("spring.profiles.active", "stubbed")
                 .set("server.port", "0")
-                .set("spring.autoconfigure.exclude", "org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration")
                 .set("camunda.bpm.generate-unique-process-engine-name", "true")
                 .set("camunda.bpm.generate-unique-process-application-name", "true");
     }

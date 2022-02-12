@@ -2,6 +2,7 @@
 package uk.co.mruoc.demo.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,7 @@ import uk.co.mruoc.demo.adapter.quote.StubbedQuoteClient;
 import uk.co.mruoc.json.JsonConverter;
 
 @Configuration
-@EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class })
+@EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class })
 @Slf4j
 @Profile("stubbed")
 public class ApplicationStubbedConfig {
