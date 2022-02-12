@@ -29,7 +29,7 @@ public class LocalEnvironment extends DockerComposeContainer<LocalEnvironment> {
         withLogConsumer(AWS_SERVICE_NAME, new LogConsumer(AWS_SERVICE_NAME));
         withLogConsumer(WIREMOCK_SERVICE_NAME, new LogConsumer(WIREMOCK_SERVICE_NAME));
 
-        withExposedService(KEYCLOAK_SERVICE_NAME, KEYCLOAK_HTTP_PORT, KEYCLOAK_WAIT);
+        withExposedService(KEYCLOAK_SERVICE_NAME, KEYCLOAK_HTTP_PORT);
         withExposedService(KEYCLOAK_SERVICE_NAME, KEYCLOAK_HTTPS_PORT);
         withExposedService(AWS_SERVICE_NAME, AWS_PORT);
         withExposedService(WIREMOCK_SERVICE_NAME, WIREMOCK_PORT);
