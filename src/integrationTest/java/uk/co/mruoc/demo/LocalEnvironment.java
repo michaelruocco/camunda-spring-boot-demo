@@ -59,7 +59,7 @@ public class LocalEnvironment extends DockerComposeContainer<LocalEnvironment> {
 
     private static WaitStrategy buildKeycloakWait() {
         return Wait.forHttp("/auth/realms/demo-local/.well-known/openid-configuration")
-                .withStartupTimeout(Duration.ofMinutes(3));
+                .withStartupTimeout(Duration.ofMinutes(4));
     }
 
 }
