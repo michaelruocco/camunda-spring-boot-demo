@@ -2,11 +2,8 @@ package uk.co.mruoc.demo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.containers.wait.strategy.WaitStrategy;
 
 import java.io.File;
-import java.time.Duration;
 
 @Slf4j
 public class LocalEnvironment extends DockerComposeContainer<LocalEnvironment> {
@@ -17,7 +14,6 @@ public class LocalEnvironment extends DockerComposeContainer<LocalEnvironment> {
     private static final String KEYCLOAK_SERVICE_NAME = "keycloak";
     private static final int KEYCLOAK_HTTP_PORT = 8091;
     private static final int KEYCLOAK_HTTPS_PORT = 8092;
-    private static final WaitStrategy KEYCLOAK_WAIT = buildKeycloakWait();
 
     private static final String WIREMOCK_SERVICE_NAME = "wiremock";
     private static final int WIREMOCK_PORT = 8080;
@@ -55,11 +51,6 @@ public class LocalEnvironment extends DockerComposeContainer<LocalEnvironment> {
         String host = getServiceHost(serviceName, port);
         int servicePort = getServicePort(serviceName, port);
         return String.format("http://%s:%d", host, servicePort);
-    }
-
-    private static WaitStrategy buildKeycloakWait() {
-        return Wait.forHttp("/auth/realms/demo-local/.well-known/openid-configuration")
-                .withStartupTimeout(Duration.ofMinutes(4));
     }
 
 }
