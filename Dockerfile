@@ -7,8 +7,7 @@ COPY build/libs/camunda-spring-boot-demo-${VERSION}.jar /opt/app.jar
 CMD java \
   -Dspring.profiles.active=secure \
   -Dserver.port=${SERVER_PORT} \
-  -Dauth.server.http=${AUTH_SERVER_HTTP} \
-  -Dauth.server.https=${AUTH_SERVER_HTTPS} \
+  -Dauth.server.base.url=${AUTH_SERVER_BASE_URL} \
   -Dauth.realm=${AUTH_REALM} \
   -Dauth.client.id=${AUTH_CLIENT_ID} \
   -Dauth.client.secret=${AUTH_CLIENT_SECRET} \
@@ -19,4 +18,6 @@ CMD java \
   -Daws.region=${AWS_REGION} \
   -Daws.s3.endpoint.override=${AWS_S3_ENDPOINT_OVERRIDE} \
   -Daws.s3.payment.bucket.name=${AWS_S3_PAYMENT_BUCKET_NAME} \
+  -Djavax.net.ssl.trustStore=${JAVA_SSL_TRUSTSTORE} \
+  -Djavax.net.ssl.trustStorePassword=${JAVA_SSL_TRUSTSTORE_PASSWORD} \
   -jar /opt/app.jar

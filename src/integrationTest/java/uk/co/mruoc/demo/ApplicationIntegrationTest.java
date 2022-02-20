@@ -47,8 +47,7 @@ class ApplicationIntegrationTest {
     private static SystemProperties buildSystemProperties(int port) {
         return new SystemProperties()
                 .set("server.port", Integer.toString(port))
-                .set("auth.server.http", LOCAL_ENVIRONMENT.getKeycloakHttpAuthUri())
-                .set("auth.server.https", LOCAL_ENVIRONMENT.getKeycloakHttpsAuthUri())
+                .set("auth.server.base.url", LOCAL_ENVIRONMENT.getKeycloakHttpsAuthUri())
                 .set("auth.realm", "demo-local")
                 .set("auth.client.id", "demo-client-id")
                 .set("auth.client.secret", "demo-client-secret")
@@ -58,7 +57,9 @@ class ApplicationIntegrationTest {
                 .set("aws.region", "eu-west-2")
                 .set("aws.s3.endpoint.override", LOCAL_ENVIRONMENT.getAwsEndpointUri())
                 .set("aws.s3.payment.bucket.name", "demo-payment")
-                .set("quote.host", LOCAL_ENVIRONMENT.getWiremockEndpointUri());
+                .set("quote.host", LOCAL_ENVIRONMENT.getWiremockEndpointUri())
+                .set("camunda.bpm.generate-unique-process-engine-name", "true")
+                .set("camunda.bpm.generate-unique-process-application-name", "true");
     }
 
 }

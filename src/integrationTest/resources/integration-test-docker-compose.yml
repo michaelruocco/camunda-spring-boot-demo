@@ -10,6 +10,7 @@ services:
       - KEYCLOAK_IMPORT=/tmp/demo-local-realm.json
     volumes:
       - ../../../keycloak/demo-local-realm.json:/tmp/demo-local-realm.json
+      - ../../../keycloak/certs:/etc/x509/https
 
   wiremock:
     image: wiremock/wiremock:2.31.0-alpine

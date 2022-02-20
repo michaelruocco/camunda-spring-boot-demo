@@ -1,7 +1,7 @@
 keycloak:
-  url.auth: ${auth.server.http}
-  url.token: ${auth.server.http}
-  url.plugin: ${auth.server.https}
+  url.auth: ${auth.server.base.url}
+  url.token: ${auth.server.base.url}
+  url.plugin: ${auth.server.base.url}
   client.id: ${auth.client.id}
   client.secret: ${auth.client.secret}
 
@@ -17,7 +17,7 @@ spring:
         scope: openid, profile, email
     provider:
       keycloak:
-        issuer-uri: ${auth.server.http}/auth/realms/${auth.realm}
+        issuer-uri: ${auth.server.base.url}/auth/realms/${auth.realm}
         openid-connect-uri: ${spring.security.oauth2.client.provider.keycloak.issuer-uri}/protocol/openid-connect
         authorization-uri: ${spring.security.oauth2.client.provider.keycloak.openid-connect-uri}/auth
         logout-uri: ${spring.security.oauth2.client.provider.keycloak.openid-connect-uri}/logout
@@ -33,7 +33,7 @@ rest.security:
 
 plugin.identity.keycloak:
   keycloakIssuerUrl: ${spring.security.oauth2.client.provider.keycloak.issuer-uri}
-  keycloakAdminUrl: ${auth.server.http}/auth/admin/realms/${auth.realm}
+  keycloakAdminUrl: ${auth.server.base.url}/auth/admin/realms/${auth.realm}
   clientId: ${auth.client.id}
   clientSecret: ${auth.client.secret}
   useEmailAsCamundaUserId: false

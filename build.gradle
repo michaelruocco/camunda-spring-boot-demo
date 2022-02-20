@@ -119,6 +119,11 @@ tasks.withType(Test) {
     systemProperty "org.slf4j.simpleLogger.defaultLogLevel", "debug"
 }
 
+integrationTest {
+    systemProperty "javax.net.ssl.trustStore", "${projectDir}/keycloak/certs/truststore.jks"
+    systemProperty "javax.net.ssl.trustStorePassword", "changeit"
+}
+
 testlogger {
     theme 'mocha'
     showStandardStreams true

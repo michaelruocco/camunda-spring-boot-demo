@@ -8,7 +8,7 @@ import uk.org.webcompere.systemstubs.properties.SystemProperties;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static uk.org.webcompere.systemstubs.resource.Resources.with;
 
-class ApplicationStubbedStartupIntegrationTest {
+class ApplicationStubbedIntegrationTest {
 
     @Test
     void applicationShouldStartWithStubbedProfile() {
