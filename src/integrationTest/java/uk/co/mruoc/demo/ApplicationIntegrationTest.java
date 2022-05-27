@@ -59,7 +59,9 @@ class ApplicationIntegrationTest {
                 .set("aws.s3.payment.bucket.name", "demo-payment")
                 .set("quote.host", LOCAL_ENVIRONMENT.getWiremockEndpointUri())
                 .set("camunda.bpm.generate-unique-process-engine-name", "true")
-                .set("camunda.bpm.generate-unique-process-application-name", "true");
+                .set("camunda.bpm.generate-unique-process-application-name", "true")
+                .set("kafka.bootstrap.servers", LOCAL_ENVIRONMENT.getKafkaEndpointUri())
+                .set("kafka.payment.topic", "payment-topic")
+                .set("kafka.process.payment.group", "process-payment-group");
     }
-
 }

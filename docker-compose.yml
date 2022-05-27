@@ -1,7 +1,7 @@
 version: '3'
 services:
 
-  keycloak:
+  keycloak: &keycloak
     image: quay.io/keycloak/keycloak:15.0.2
     container_name: keycloak
     hostname: "keycloak"
@@ -12,7 +12,7 @@ services:
     environment:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
-      #- KEYCLOAK_FRONTEND_URL=https://keycloak:8092/auth
+      - KEYCLOAK_FRONTEND_URL=https://keycloak:8092/auth
       - KEYCLOAK_IMPORT=/tmp/demo-local-realm.json
     volumes:
       - ./keycloak/demo-local-realm.json:/tmp/demo-local-realm.json
@@ -85,7 +85,7 @@ services:
     image: michaelruocco/camunda-spring-boot-demo:${APP_VERSION}
     container_name: demo-app
     restart: on-failure
-    profiles: [ "local-docker" ]
+    profiles: ["local-docker"]
     ports:
       - 8090:80
     environment:
@@ -103,6 +103,9 @@ services:
       - QUOTE_HOST=http://wiremock:8080
       - JAVA_SSL_TRUSTSTORE=/opt/certs/truststore.jks
       - JAVA_SSL_TRUSTSTORE_PASSWORD=changeit
+      - KAFKA_BOOTSTRAP_SERVERS=http://kafka:9092
+      - KAFKA_PAYMENT_TOPIC=payment-topic
+      - KAFKA_PROCESS_PAYMENT_GROUP=process-payment-group
     volumes:
       - ./keycloak/certs:/opt/certs
     depends_on:

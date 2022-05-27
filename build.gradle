@@ -175,6 +175,7 @@ task buildImage(type: DockerBuildImage) {
 
 dockerCompose {
     environment.put 'APP_VERSION', version
+    composeAdditionalArgs = ['--profile', 'local-docker']
 }
 
 task installNewman(type: NpmTask) {
