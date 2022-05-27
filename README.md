@@ -63,7 +63,19 @@ includes a random UUID for uniqueness.
 To do this you can run the following command:
 
 ```bash
-./gradlew bootRun
+./gradlew bootRun -Dspring.profiles.active=default \
+  -Dserver.port=8090 \
+  -Dauth.server.base.url=https://localhost:8092 \
+  -Dauth.realm=demo-local \
+  -Dauth.client.id=demo-client-id \
+  -Dauth.client.secret=demo-client-id-secret \
+  -Dauth.admin.group=camunda-admin \
+  -Dquote.host=http://wiremock:8093 \
+  -Daws.accessKeyId=abc \
+  -Daws.secretAccessKey=123 \
+  -Daws.region=eu-west-2 \
+  -Daws.s3.endpoint.override=http://localhost:4566 \
+  -Daws.s3.payment.bucket.name=demo-payment
 ```
 
 ## Running Postman integration tests with dependencies
