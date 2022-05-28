@@ -167,14 +167,16 @@ java {
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 
 task buildImage(type: DockerBuildImage) {
-    mustRunAfter(spotlessApply, assemble, test, integrationTest)
+    dependsOn bootJar
     inputDir.set(file("."))
     images.add("${imageName}:${version}")
     buildArgs = ["VERSION": version]
 }
 
+composeUp.dependsOn buildImage
 dockerCompose {
     environment.put 'APP_VERSION', version
+    environment.put 'KEYCLOAK_FRONTEND_HOST', 'keycloak'
     composeAdditionalArgs = ['--profile', 'local-docker']
 }
 
@@ -183,7 +185,7 @@ task installNewman(type: NpmTask) {
 }
 
 task postman(type: NpxTask) {
-    dependsOn installNewman
+    dependsOn installNewman, composeUp
     command = 'newman'
     args = [
             'run',

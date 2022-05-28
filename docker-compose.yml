@@ -12,7 +12,7 @@ services:
     environment:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
-      - KEYCLOAK_FRONTEND_URL=https://keycloak:8092/auth
+      - KEYCLOAK_FRONTEND_URL=https://${KEYCLOAK_FRONTEND_HOST:-localhost}:8092/auth
       - KEYCLOAK_IMPORT=/tmp/demo-local-realm.json
     volumes:
       - ./keycloak/demo-local-realm.json:/tmp/demo-local-realm.json
