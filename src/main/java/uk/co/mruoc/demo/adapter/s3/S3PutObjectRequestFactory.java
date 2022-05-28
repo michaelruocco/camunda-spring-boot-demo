@@ -1,6 +1,5 @@
 package uk.co.mruoc.demo.adapter.s3;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -12,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
-@RequiredArgsConstructor
 public class S3PutObjectRequestFactory {
 
     private final PutObjectRequest.Builder builder;
@@ -20,6 +18,11 @@ public class S3PutObjectRequestFactory {
 
     public S3PutObjectRequestFactory(String bucketName, JsonConverter converter) {
         this(toRequestBuilder(bucketName), converter);
+    }
+
+    public S3PutObjectRequestFactory(PutObjectRequest.Builder builder, JsonConverter converter) {
+        this.builder = builder;
+        this.converter = converter;
     }
 
     public S3PutObjectRequestAdapter build(Payment payment) {

@@ -28,7 +28,39 @@ This repo contains a simple demo application using [Camunda](https://camunda.com
 ./gradlew clean currentVersion dependencyUpdates spotlessApply build integrationTest
 ```
 
-## Running locally with dependencies
+## Running locally with dependencies and app on local machien
+
+Run the following command to spin up dependencies
+
+```bash
+docker-compose up -d
+```
+
+Then run the following command to run the application on your local machine
+configured to talk to the dependencies running inside docker compose:
+
+```bash
+./gradlew bootRun -Dspring.profiles.active=secure \
+  -Dserver.port=8090 \
+  -Dauth.server.base.url=https://localhost:8092 \
+  -Dauth.realm=demo-local \
+  -Dauth.client.id=demo-client-id \
+  -Dauth.client.secret=demo-client-secret \
+  -Dauth.admin.group=camunda-admin \
+  -Dquote.host=http://localhost:8093 \
+  -Daws.accessKeyId=abc \
+  -Daws.secretAccessKey=123 \
+  -Daws.region=eu-west-2 \
+  -Daws.s3.endpoint.override=http://localhost:4566 \
+  -Daws.s3.payment.bucket.name=demo-payment \
+  -Djavax.net.ssl.trustStore=$(pwd)/keycloak/certs/truststore.jks \
+  -Djavax.net.ssl.trustStorePassword=changeit \
+  -Dkafka.bootstrap.servers=http://localhost:9094 \
+  -Dkafka.payment.topic=payment-topic \
+  -Dkafka.process.payment.group=process-payment-group
+```
+
+## Running locally with dependencies and app in docker
 
 ```bash
 ./gradlew clean spotlessApply build integrationTest buildImage composeUp
@@ -63,13 +95,15 @@ includes a random UUID for uniqueness.
 To do this you can run the following command:
 
 ```bash
-./gradlew bootRun
+./gradlew bootRun -Dserver.port=8090 \
+  -Dspring.profiles.active=stubbed \
+  -Dspring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration
 ```
 
 ## Running Postman integration tests with dependencies
 
 ```bash
-./gradlew clean build buildImage composeUp postman composeDown
+./gradlew clean bootJar buildImage composeUp postman composeDown
 ```
 
 This will build the application into a docker container and then runs the application container

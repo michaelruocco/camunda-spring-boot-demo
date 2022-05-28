@@ -1,7 +1,7 @@
 version: '3'
 services:
 
-  keycloak:
+  keycloak: &keycloak
     image: quay.io/keycloak/keycloak:15.0.2
     container_name: keycloak
     hostname: "keycloak"
@@ -12,7 +12,7 @@ services:
     environment:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
-      - KEYCLOAK_FRONTEND_URL=https://keycloak:8092/auth
+      - KEYCLOAK_FRONTEND_URL=https://${KEYCLOAK_FRONTEND_HOST:-localhost}:8092/auth
       - KEYCLOAK_IMPORT=/tmp/demo-local-realm.json
     volumes:
       - ./keycloak/demo-local-realm.json:/tmp/demo-local-realm.json
@@ -45,10 +45,47 @@ services:
       - DEFAULT_REGION=eu-west-2
       - SERVICES=s3
 
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    ports:
+      - 2181:2181
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    ports:
+      - 9094:9094
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_LISTENERS=INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:9094
+      - KAFKA_ADVERTISED_LISTENERS=INTERNAL://kafka:9092,EXTERNAL://localhost:9094
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL
+      - KAFKA_CREATE_TOPICS=payment-topic:1:1
+    depends_on:
+      - zookeeper
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - 8080:8080
+    restart: "no"
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local-kafka-cluster
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+    depends_on:
+      - kafka
+
   demo-app:
     image: michaelruocco/camunda-spring-boot-demo:${APP_VERSION}
     container_name: demo-app
     restart: on-failure
+    profiles: ["local-docker"]
     ports:
       - 8090:80
     environment:
@@ -66,8 +103,12 @@ services:
       - QUOTE_HOST=http://wiremock:8080
       - JAVA_SSL_TRUSTSTORE=/opt/certs/truststore.jks
       - JAVA_SSL_TRUSTSTORE_PASSWORD=changeit
+      - KAFKA_BOOTSTRAP_SERVERS=http://kafka:9092
+      - KAFKA_PAYMENT_TOPIC=payment-topic
+      - KAFKA_PROCESS_PAYMENT_GROUP=process-payment-group
     volumes:
       - ./keycloak/certs:/opt/certs
     depends_on:
       - wiremock
       - keycloak
+      - kafka

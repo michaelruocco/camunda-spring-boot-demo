@@ -18,17 +18,22 @@ public class LocalEnvironment extends DockerComposeContainer<LocalEnvironment> {
     private static final String WIREMOCK_SERVICE_NAME = "wiremock";
     private static final int WIREMOCK_PORT = 8080;
 
+    private static final String KAFKA_SERVICE_NAME = "kafka";
+    private static final int KAFKA_PORT = 9094;
+
     public LocalEnvironment() {
         super(new File("src/integrationTest/resources/integration-test-docker-compose.yml"));
-        withServices(KEYCLOAK_SERVICE_NAME, AWS_SERVICE_NAME, WIREMOCK_SERVICE_NAME);
+        withServices(KEYCLOAK_SERVICE_NAME, AWS_SERVICE_NAME, WIREMOCK_SERVICE_NAME, KAFKA_SERVICE_NAME);
         withLogConsumer(KEYCLOAK_SERVICE_NAME, new LogConsumer(KEYCLOAK_SERVICE_NAME));
         withLogConsumer(AWS_SERVICE_NAME, new LogConsumer(AWS_SERVICE_NAME));
         withLogConsumer(WIREMOCK_SERVICE_NAME, new LogConsumer(WIREMOCK_SERVICE_NAME));
+        withLogConsumer(KAFKA_SERVICE_NAME, new LogConsumer(KAFKA_SERVICE_NAME));
 
         withExposedService(KEYCLOAK_SERVICE_NAME, KEYCLOAK_HTTP_PORT);
         withExposedService(KEYCLOAK_SERVICE_NAME, KEYCLOAK_HTTPS_PORT);
         withExposedService(AWS_SERVICE_NAME, AWS_PORT);
         withExposedService(WIREMOCK_SERVICE_NAME, WIREMOCK_PORT);
+        withExposedService(KAFKA_SERVICE_NAME, KAFKA_PORT);
     }
 
     public String getAwsEndpointUri() {
@@ -45,6 +50,10 @@ public class LocalEnvironment extends DockerComposeContainer<LocalEnvironment> {
 
     public String getWiremockEndpointUri() {
         return toLocalEndpoint(WIREMOCK_SERVICE_NAME, WIREMOCK_PORT);
+    }
+
+    public String getKafkaEndpointUri() {
+        return toLocalEndpoint(KAFKA_SERVICE_NAME, KAFKA_PORT);
     }
 
     public String toLocalEndpoint(String serviceName, int port) {

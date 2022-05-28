@@ -6,7 +6,6 @@ import uk.co.mruoc.demo.domain.entity.Payment;
 import uk.co.mruoc.demo.domain.service.PaymentPersistor;
 import uk.co.mruoc.json.JsonConverter;
 
-//TODO unit test
 @RequiredArgsConstructor
 @Slf4j
 public class LoggingPaymentPersistor implements PaymentPersistor {
