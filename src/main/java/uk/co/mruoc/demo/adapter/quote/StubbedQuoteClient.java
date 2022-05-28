@@ -4,7 +4,6 @@ import uk.co.mruoc.demo.domain.service.QuoteClient;
 
 import java.util.UUID;
 
-//TODO unit test
 public class StubbedQuoteClient implements QuoteClient {
 
     @Override
