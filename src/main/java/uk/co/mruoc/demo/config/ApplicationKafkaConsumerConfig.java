@@ -1,6 +1,5 @@
 package uk.co.mruoc.demo.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -14,6 +13,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import uk.co.mruoc.demo.domain.service.PaymentService;
 import uk.co.mruoc.demo.kafka.ProcessPaymentListener;
+import uk.co.mruoc.json.JsonConverter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class ApplicationKafkaConsumerConfig {
     }
 
     @Bean
-    public ProcessPaymentListener processPaymentListener(ObjectMapper mapper, PaymentService service) {
-        return new ProcessPaymentListener(mapper, service);
+    public ProcessPaymentListener processPaymentListener(JsonConverter converter, PaymentService service) {
+        return new ProcessPaymentListener(converter, service);
     }
 }
