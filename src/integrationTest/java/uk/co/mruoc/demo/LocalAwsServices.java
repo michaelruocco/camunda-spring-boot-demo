@@ -26,9 +26,9 @@ public class LocalAwsServices extends GenericContainer<LocalAwsServices> {
     }
 
     public String getEndpointUri() {
-        String ip = getContainerIpAddress();
+        String host = getHost();
         int port = getMappedPort(PORT);
-        return String.format("http://%s:%s", ip, port);
+        return String.format("http://%s:%s", host, port);
     }
 
     public String getAccessKeyId() {
