@@ -23,7 +23,7 @@ group "com.github.michaelruocco"
 
 ext {
     lombokVersion = "1.18.24"
-    camundaVersion = "7.17.0"
+    camundaVersion = "7.18.0"
     awsSdkVersion = "2.18.30"
     keycloakVersion = "15.0.2"
 
