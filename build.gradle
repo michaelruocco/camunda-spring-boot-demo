@@ -24,12 +24,13 @@ group "com.github.michaelruocco"
 ext {
     lombokVersion = "1.18.24"
     camundaVersion = "7.17.0"
-    awsSdkVersion = "2.17.285"
+    awsSdkVersion = "2.18.30"
     keycloakVersion = "15.0.2"
 
     junitVersion = "5.9.1"
     mockitoVersion = "4.9.0"
     systemStubsVersion = "2.0.1"
+    testContainersVersion = "1.17.6"
 
     imageName = "michaelruocco/${project.name}"
 }
@@ -96,15 +97,18 @@ dependencies {
     integrationTestCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     integrationTestAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     integrationTestImplementation "uk.org.webcompere:system-stubs-jupiter:${systemStubsVersion}"
-    integrationTestImplementation "org.testcontainers:junit-jupiter:1.17.6"
+    integrationTestImplementation "org.testcontainers:junit-jupiter:${testContainersVersion}"
+    integrationTestImplementation "org.testcontainers:localstack:${testContainersVersion}"
+    // required by test containers localstack
+    integrationTestImplementation "com.amazonaws:aws-java-sdk-core:1.12.357"
 
     testFixturesCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testFixturesAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testFixturesImplementation "com.github.michaelruocco:file-loader:7.0.2"
     testFixturesImplementation "org.camunda.bpm:camunda-engine:${camundaVersion}"
     testFixturesImplementation "org.mockito:mockito-core:${mockitoVersion}"
-    testFixturesImplementation "software.amazon.awssdk:s3:${awsSdkVersion}"
     testFixturesImplementation "org.awaitility:awaitility:4.2.0"
+    testFixturesImplementation "software.amazon.awssdk:s3:${awsSdkVersion}"
 }
 
 javadoc.options.addStringOption('Xdoclint:none', '-quiet')

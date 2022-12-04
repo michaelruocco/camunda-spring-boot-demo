@@ -7,7 +7,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.org.awaitility.Awaitility;
 import software.amazon.awssdk.auth.credentials.SystemPropertyCredentialsProvider;
-import uk.co.mruoc.demo.LocalAwsServices;
+import uk.co.mruoc.demo.LocalAws;
 import uk.co.mruoc.demo.adapter.camunda.s3.S3PaymentBucketCallable;
 import uk.co.mruoc.demo.adapter.camunda.s3.S3PaymentGetterCallable;
 import uk.co.mruoc.demo.domain.entity.Payment;
@@ -26,7 +26,7 @@ import static uk.org.webcompere.systemstubs.resource.Resources.with;
 class S3PersistenceIntegrationTest {
 
     @Container
-    public static final LocalAwsServices AWS_SERVICES = new LocalAwsServices();
+    public static final LocalAws AWS_SERVICES = new LocalAws();
 
     private static final JsonConverter CONVERTER = new JacksonJsonConverter(new ObjectMapper());
 
@@ -66,13 +66,13 @@ class S3PersistenceIntegrationTest {
 
     private SystemProperties systemProperties() {
         return new SystemProperties()
-                .set("aws.accessKeyId", AWS_SERVICES.getAccessKeyId())
-                .set("aws.secretAccessKey", AWS_SERVICES.getSecretAccessKey());
+                .set("aws.accessKeyId", AWS_SERVICES.getAccessKey())
+                .set("aws.secretAccessKey", AWS_SERVICES.getSecretKey());
     }
 
     private static S3Config buildConfig() {
         return S3Config.builder()
-                .endpointOverride(AWS_SERVICES.getEndpointUri())
+                .endpointOverride(AWS_SERVICES.getS3EndpointOverrideAsString())
                 .region(AWS_SERVICES.getRegion())
                 .credentialsProvider(SystemPropertyCredentialsProvider.create())
                 .paymentBucketName("demo-payment")
