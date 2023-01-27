@@ -24,7 +24,7 @@ group "com.github.michaelruocco"
 ext {
     lombokVersion = "1.18.24"
     camundaVersion = "7.18.0"
-    awsSdkVersion = "2.18.30"
+    awsSdkVersion = "2.19.25"
     keycloakVersion = "15.0.2"
 
     junitVersion = "5.9.1"
@@ -79,7 +79,7 @@ dependencies {
     implementation "org.camunda.bpm:camunda-engine-plugin-spin:${camundaVersion}"
     implementation "org.camunda.spin:camunda-spin-dataformat-all:1.18.0"
     implementation "software.amazon.awssdk:s3:${awsSdkVersion}"
-    implementation "io.projectreactor:reactor-core:3.5.0"
+    implementation "io.projectreactor:reactor-core:3.5.2"
     implementation "com.github.michaelruocco:json-adapter:1.0.4"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
@@ -100,7 +100,7 @@ dependencies {
     integrationTestImplementation "org.testcontainers:junit-jupiter:${testContainersVersion}"
     integrationTestImplementation "org.testcontainers:localstack:${testContainersVersion}"
     // required by test containers localstack
-    integrationTestImplementation "com.amazonaws:aws-java-sdk-core:1.12.357"
+    integrationTestImplementation "com.amazonaws:aws-java-sdk-core:1.12.394"
 
     testFixturesCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testFixturesAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"

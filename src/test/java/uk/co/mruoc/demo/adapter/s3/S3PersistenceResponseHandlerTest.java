@@ -19,7 +19,7 @@ class S3PersistenceResponseHandlerTest {
     void shouldThrowExceptionWhenHandlingError() {
         Throwable cause = new Exception("test-error");
 
-        Throwable error = catchThrowable(() -> handler.handle(cause));
+        Throwable error = catchThrowable(() -> handler.handleError(cause));
 
         assertThat(error)
                 .isInstanceOf(S3PersistenceException.class)
@@ -33,7 +33,7 @@ class S3PersistenceResponseHandlerTest {
         PutObjectResponse response = givenPutObjectResponse(httpResponse);
         when(response.toString()).thenReturn(responseString);
 
-        Throwable error = catchThrowable(() -> handler.handle(response));
+        Throwable error = catchThrowable(() -> handler.handleResponse(response));
 
         assertThat(error)
                 .isInstanceOf(S3PersistenceException.class)
@@ -45,7 +45,7 @@ class S3PersistenceResponseHandlerTest {
         SdkHttpResponse httpResponse = givenHttpResponse(true);
         PutObjectResponse response = givenPutObjectResponse(httpResponse);
 
-        ThrowingCallable call = (() -> handler.handle(response));
+        ThrowingCallable call = (() -> handler.handleResponse(response));
 
         assertThatCode(call).doesNotThrowAnyException();
     }

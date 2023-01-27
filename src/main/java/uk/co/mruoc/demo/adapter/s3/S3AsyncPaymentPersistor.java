@@ -43,7 +43,7 @@ public class S3AsyncPaymentPersistor implements PaymentPersistor {
     private void performPersist(Payment payment) {
         S3PutObjectRequestAdapter adapter = requestFactory.build(payment);
         CompletableFuture<PutObjectResponse> future = client.putObject(adapter.getRequest(), adapter.getBody());
-        Mono.fromFuture(future).subscribe(responseHandler::handle, responseHandler::handle);
+        Mono.fromFuture(future).subscribe(responseHandler::handleResponse, responseHandler::handleError);
     }
 
     private static S3PutObjectRequestFactory toRequestFactory(S3Config config, JsonConverter jsonConverter) {

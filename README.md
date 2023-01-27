@@ -51,7 +51,7 @@ configured to talk to the dependencies running inside docker compose:
   -Daws.accessKeyId=abc \
   -Daws.secretAccessKey=123 \
   -Daws.region=eu-west-2 \
-  -Daws.s3.endpoint.override=http://localhost:4566 \
+  -Daws.s3.endpoint.override=http://s3.localhost.localstack.cloud:4566 \
   -Daws.s3.payment.bucket.name=demo-payment \
   -Djavax.net.ssl.trustStore=$(pwd)/keycloak/certs/truststore.jks \
   -Djavax.net.ssl.trustStorePassword=changeit \

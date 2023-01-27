@@ -9,11 +9,11 @@ import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 @Slf4j
 public class S3PersistenceResponseHandler {
 
-    public void handle(Throwable error) {
+    public void handleError(Throwable error) {
         throw new S3PersistenceException(error);
     }
 
-    public void handle(PutObjectResponse response) {
+    public void handleResponse(PutObjectResponse response) {
         SdkHttpResponse httpResponse = response.sdkHttpResponse();
         log.info("s3 put http response {}", response);
         if (!httpResponse.isSuccessful()) {

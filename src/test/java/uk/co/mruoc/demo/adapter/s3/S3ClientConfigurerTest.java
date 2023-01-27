@@ -29,13 +29,13 @@ class S3ClientConfigurerTest {
     void shouldConfigureRegionAndCredentialsProviderIfEndpointOverrideNotSet() {
         S3AsyncClientBuilder builderWithRegion = givenConfiguredWithRegion(clientBuilder);
         S3AsyncClientBuilder builderWithCredentials = givenConfiguredWithCredentials(builderWithRegion);
+        S3AsyncClientBuilder builderPathForced = givenConfiguredWithPathStyleForced(builderWithCredentials);
         S3Config config = configBuilder.build();
         S3ClientConfigurer<S3AsyncClientBuilder, S3AsyncClient> configurer = new S3ClientConfigurer<>(config);
 
         S3AsyncClientBuilder configuredClientBuilder = configurer.configure(clientBuilder);
 
-
-        assertThat(configuredClientBuilder).isEqualTo(builderWithCredentials);
+        assertThat(configuredClientBuilder).isEqualTo(builderPathForced);
     }
 
     @Test
@@ -43,7 +43,8 @@ class S3ClientConfigurerTest {
         URI endpointOverride = new URI("http://localhost:1234");
         S3AsyncClientBuilder builderWithRegion = givenConfiguredWithRegion(clientBuilder);
         S3AsyncClientBuilder builderWithCredentials = givenConfiguredWithCredentials(builderWithRegion);
-        S3AsyncClientBuilder builderWithEndpointOverride = givenConfiguredWithEndpointOverride(builderWithCredentials, endpointOverride);
+        S3AsyncClientBuilder builderPathForced = givenConfiguredWithPathStyleForced(builderWithCredentials);
+        S3AsyncClientBuilder builderWithEndpointOverride = givenConfiguredWithEndpointOverride(builderPathForced, endpointOverride);
         S3Config config = configBuilder.endpointOverride(endpointOverride.toString()).build();
         S3ClientConfigurer<S3AsyncClientBuilder, S3AsyncClient> configurer = new S3ClientConfigurer<>(config);
 
@@ -98,4 +99,9 @@ class S3ClientConfigurerTest {
         return builderWithCredentials;
     }
 
+    private S3AsyncClientBuilder givenConfiguredWithPathStyleForced(S3AsyncClientBuilder builder) {
+        S3AsyncClientBuilder builderWithPathForced = mock(S3AsyncClientBuilder.class);
+        when(builder.forcePathStyle(true)).thenReturn(builderWithPathForced);
+        return builderWithPathForced;
+    }
 }

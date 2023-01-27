@@ -30,7 +30,7 @@ public class S3ClientConfigurer<B extends S3BaseClientBuilder<B, C>, C> {
         String region = config.getRegion();
         AwsCredentialsProvider credentialsProvider = config.getCredentialsProvider();
         log.info("configuring s3 region {} and credentials provider {}", region, credentialsProvider);
-        return builder.region(Region.of(region)).credentialsProvider(credentialsProvider);
+        return builder.region(Region.of(region)).credentialsProvider(credentialsProvider).forcePathStyle(true);
     }
 
     private static URI toUri(String endpointOverride) {

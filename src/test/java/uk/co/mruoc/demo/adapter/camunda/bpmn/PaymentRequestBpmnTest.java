@@ -24,7 +24,7 @@ import static org.camunda.bpm.extension.mockito.CamundaMockito.registerJavaDeleg
 import static org.camunda.bpm.extension.mockito.CamundaMockito.reset;
 import static org.camunda.bpm.extension.mockito.CamundaMockito.verifyJavaDelegateMock;
 
-@Deployment(resources = {"bpmns/request-payment-approval.bpmn", "bpmns/auto-approve-payment.dmn"})
+@Deployment(resources = {"processes/request-payment-approval.bpmn", "processes/auto-approve-payment.dmn"})
 class PaymentRequestBpmnTest {
 
     private static final String PROCESS_DEFINITION_KEY = "request-payment-approval";

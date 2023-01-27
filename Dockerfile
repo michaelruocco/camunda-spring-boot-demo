@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk15:alpine-jre
+FROM eclipse-temurin:17.0.6_10-jre
 
 ARG VERSION
 
