@@ -3,8 +3,6 @@ package uk.co.mruoc.demo;
 import lombok.extern.slf4j.Slf4j;
 import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.AwsCredentials;
 
 import java.net.URI;
 
@@ -26,7 +24,7 @@ public class LocalAws extends LocalStackContainer {
         withEnv("AWS_SECRET_ACCESS_KEY", SECRET_ACCESS_KEY);
         withEnv("DEFAULT_REGION", REGION);
         withExposedPorts(PORT);
-        withCopyFileToContainer(forHostPath("localstack/init-s3.sh"), "/docker-entrypoint-initaws.d/init-s3.sh");
+        withCopyFileToContainer(forHostPath("localstack/init-s3.sh"), "/etc/localstack/init/ready.d/init-s3.sh");
         withLogConsumer(new LogConsumer());
     }
 
@@ -36,9 +34,5 @@ public class LocalAws extends LocalStackContainer {
 
     public URI getS3EndpointOverride() {
         return getEndpointOverride(Service.S3);
-    }
-
-    public AwsCredentials getCredentialsProvider() {
-        return AwsBasicCredentials.create(getAccessKey(), getSecretKey());
     }
 }

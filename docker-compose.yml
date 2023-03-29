@@ -38,7 +38,7 @@ services:
     ports:
       - 4566:4566
     volumes:
-      - ./localstack:/docker-entrypoint-initaws.d
+      - ./localstack:/etc/localstack/init/ready.d
     environment:
       - AWS_ACCESS_KEY_ID=abc
       - AWS_SECRET_ACCESS_KEY=123
