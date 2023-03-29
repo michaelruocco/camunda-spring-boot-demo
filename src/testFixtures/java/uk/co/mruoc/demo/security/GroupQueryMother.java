@@ -7,7 +7,6 @@ import org.camunda.bpm.engine.identity.GroupQuery;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -26,7 +25,7 @@ public class GroupQueryMother {
     private static List<Group> toGroups(Collection<String> groupIds) {
         return groupIds.stream()
                 .map(GroupQueryMother::givenGroupWithId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static Group givenGroupWithId(String id) {

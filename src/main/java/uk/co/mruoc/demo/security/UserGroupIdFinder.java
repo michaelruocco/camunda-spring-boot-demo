@@ -7,7 +7,6 @@ import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.identity.Group;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -19,7 +18,7 @@ public class UserGroupIdFinder {
                 .list()
                 .stream()
                 .map(Group::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

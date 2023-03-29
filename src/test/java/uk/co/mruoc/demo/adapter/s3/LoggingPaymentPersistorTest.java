@@ -6,7 +6,6 @@ import uk.co.mruoc.json.JsonConverter;
 import uk.org.webcompere.systemstubs.ThrowingRunnable;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -40,7 +39,7 @@ class LoggingPaymentPersistorTest {
     public static List<String> captureLogLines(ThrowingRunnable statement) throws Exception {
         return tapSystemOut(statement)
                 .lines()
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }
